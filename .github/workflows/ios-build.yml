@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies (Node.js)
@@ -25,8 +25,7 @@ jobs:
 
       - name: Generate native iOS project (expo-prebuild)
         run: |
-          npx expo prebuild --clean
-          npx expo prebuild --platform ios
+          npx expo prebuild --platform ios --clean
 
       - name: Build unsigned .ipa using xcodebuild
         run: |
@@ -38,6 +37,8 @@ jobs:
             -configuration Release \
             -archivePath build/pdfcraft-mobile.xcarchive \
             -destination generic/platform=iOS \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
           cat > ExportOptions.plist <<EOF
