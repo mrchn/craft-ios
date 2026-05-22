@@ -20,7 +20,17 @@
 			"output": "static", "favicon": "./assets/images/favicon.png"
 		},
 		"plugins": [
-			"expo-router", "expo-font",
+			"expo-router",
+			[
+				"expo-font",
+				{
+					"fonts": [
+						"./assets/fonts/googlesans-regular.ttf",
+						"./assets/fonts/googlesans-bold.ttf",
+						"./assets/fonts/caveat-bold.ttf"
+					]
+				}
+			],
 			[
 				"expo-splash-screen",
 				{
