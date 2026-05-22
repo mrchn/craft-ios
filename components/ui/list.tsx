@@ -1,6 +1,6 @@
 // @/components/ui/list (pdfcraft-mobile)
 import React, { useState, useEffect } from 'react';
-import { FlatList, Pressable, View, Text, ActivityIndicator } from 'react-native';
+import { FlatList, Pressable, View, Text, ActivityIndicator, Alert } from 'react-native';
 import Animated, { FadeInDown, LinearTransition, FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -52,7 +52,9 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 						throw new Error(`server error: ${response.status}`);
 					}
 					if (contentType && !contentType.includes('application/pdf')) {
-						const rawText = await response.text(); alert(`server response: ${rawText}`); return;
+						const rawText = await response.text();
+						Alert.alert('SERVER RESPONSE', rawText, [{ text: 'OK' }]);
+						return;
 					}
 					const arrayBuffer = await response.arrayBuffer();
 					const uint8 = new Uint8Array(arrayBuffer); const chunks: string[] = [];
@@ -64,8 +66,10 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 					await FileSystem.writeAsStringAsync(pdf_uri, base64_data, { encoding: FileSystem.EncodingType.Base64 });
 					set_is_converting(false);
 					if (await Sharing.isAvailableAsync()) { await Sharing.shareAsync(pdf_uri) };
-				} catch (error) { alert('server is waking up, wait about 40 seconds and press the button again.') }
-			} else { alert('something went wrong while building :(') }
+				} catch (error) {
+					Alert.alert('SERVER IS WAKING UP', 'wait about 40 seconds and press the button again.', [{ text: 'OK' }])
+				}
+			} else { Alert.alert(':(', 'something went wrong while building.', [{ text: 'OK' }]) }
 			set_selected_doc(null);
 		}, 600);
 	};
@@ -111,6 +115,11 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 			if (!result.canceled && result.assets && result.assets[0]) {
 				const picked_file = result.assets[0];
 				const file_size_bytes = picked_file.size;
+				const already_exists = documents.some(d => d.title === picked_file.name);
+				if (already_exists) {
+					Alert.alert(':(', 'document already exists.', [{ text: 'OK' }])
+					return;
+				}
 				let file_size_mb = '0.1 MB'; // default значение для маленьких файлов
 				if (file_size_bytes) {
 					const size_in_mb = file_size_bytes / (1024 * 1024);
