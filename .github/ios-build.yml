@@ -1,0 +1,50 @@
+name: build unsigned ios .ipa
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: generate native ios project (expo prebuild)
+        run: npx expo prebuild --platform ios
+
+      - name: build unsigned .ipa using xcodebuild
+        run: |
+          cd ios
+
+          xcodebuild archive \
+            -workspace *.xcworkspace \
+            -scheme $(basename *.xcodeproj .xcodeproj) \
+            -configuration Release \
+            -archivePath build/App.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+          mkdir -p build/Payload
+          cp -r build/App.xcarchive/Products/Applications/*.app build/Payload/
+
+          cd build
+          zip -r App.ipa Payload
+
+      - name: upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-ios-app
+          path: ios/build/pdfcraft.ipa
+          retention-days: 14
