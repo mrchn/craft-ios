@@ -5,7 +5,7 @@ import { Stack } from 'expo-router'; import { StatusBar } from 'expo-status-bar'
 import { useFonts } from 'expo-font'; import 'react-native-reanimated';
 import * as SplashScreen from 'expo-splash-screen';
 
-SplashScreen.hideAsync();
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 	const [fontsLoaded] = useFonts({
