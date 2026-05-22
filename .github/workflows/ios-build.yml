@@ -1,29 +1,32 @@
-name: build unsigned ios .ipa
+name: Build unsigned app for iOS (for Altstore install)
 
 on:
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build-ios:
     runs-on: macos-latest
 
     steps:
-      - name: checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: setup node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
 
-      - name: install dependencies
+      - name: Install dependencies (Node.js)
         run: npm ci
 
-      - name: generate native ios project (expo prebuild)
+      - name: Generate native iOS project (expo-prebuild)
         run: npx expo prebuild --platform ios
 
-      - name: build unsigned .ipa using xcodebuild
+      - name: Build unsigned .ipa using xcodebuild
         run: |
           cd ios
 
@@ -31,20 +34,20 @@ jobs:
             -workspace *.xcworkspace \
             -scheme $(basename *.xcodeproj .xcodeproj) \
             -configuration Release \
-            -archivePath build/App.xcarchive \
+            -archivePath build/pdfcraft-mobile.xcarchive \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
           mkdir -p build/Payload
-          cp -r build/App.xcarchive/Products/Applications/*.app build/Payload/
+          cp -r build/pdfcraft-mobile.xcarchive/Products/Applications/*.app build/Payload/
 
           cd build
-          zip -r App.ipa Payload
+          zip -r pdfcraft-mobile.ipa Payload
 
-      - name: upload .ipa artifact
+      - name: Upload .ipa artifact
         uses: actions/upload-artifact@v4
         with:
-          name: unsigned-ios-app
-          path: ios/build/App.ipa
+          name: pdfcraft-mobile
+          path: ios/build/pdfcraft-mobile.ipa
           retention-days: 14
