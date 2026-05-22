@@ -17,14 +17,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
           cache: 'npm'
 
       - name: Install dependencies (Node.js)
         run: npm ci
 
       - name: Generate native iOS project (expo-prebuild)
-        run: npx expo prebuild --platform ios --clean
+        run: |
+          npx expo prebuild --clean
+          npx expo prebuild --platform ios
 
       - name: Build unsigned .ipa using xcodebuild
         run: |
@@ -35,19 +37,35 @@ jobs:
             -scheme $(basename *.xcodeproj .xcodeproj) \
             -configuration Release \
             -archivePath build/pdfcraft-mobile.xcarchive \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
+            -destination generic/platform=iOS \
             CODE_SIGNING_ALLOWED=NO
 
-          mkdir -p build/Payload
-          cp -r build/pdfcraft-mobile.xcarchive/Products/Applications/*.app build/Payload/
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>development</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>compileBitcode</key>
+            <false/>
+          </dict>
+          </plist>
+          EOF
 
-          cd build
-          zip -r pdfcraft-mobile.ipa Payload
+          xcodebuild -exportArchive \
+            -archivePath build/pdfcraft-mobile.xcarchive \
+            -exportPath build/export \
+            -exportOptionsPlist ExportOptions.plist \
+            CODE_SIGNING_ALLOWED=NO
 
       - name: Upload .ipa artifact
         uses: actions/upload-artifact@v4
         with:
           name: pdfcraft-mobile
-          path: ios/build/pdfcraft-mobile.ipa
+          path: ios/build/export/*.ipa
           retention-days: 14
