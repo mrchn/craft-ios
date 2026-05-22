@@ -151,6 +151,11 @@ export const theme_form = StyleSheet.create({
 		borderRadius: Shape.full, alignItems: 'center', marginTop: 20,
 	},
 	submit_text: { color: c.onPrimary, ...TypeScale.labelLarge, fontWeight: '700', },
+	indicator: {
+		position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center',
+		backgroundColor: 'rgba(20,18,24,0.8)', justifyContent: 'center', zIndex: 9999
+	},
+	indicator_text: { color: Colors.dark.onSurface, marginTop: 16, fontFamily: 'GoogleSansBold' }
 });
 export const theme_menu = StyleSheet.create({
 	modal_bg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.0)', justifyContent: 'flex-end' },

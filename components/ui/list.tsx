@@ -1,12 +1,17 @@
 // @/components/ui/list (pdfcraft-mobile)
-import React, { useState, useEffect } from 'react'; import { Ionicons } from '@expo/vector-icons';
-import { FlatList, Pressable, View, Text } from 'react-native'; import * as Haptics from 'expo-haptics';
+import React, { useState, useEffect } from 'react';
+import { FlatList, Pressable, View, Text, ActivityIndicator } from 'react-native';
 import Animated, { FadeInDown, LinearTransition, FadeIn, FadeOut } from 'react-native-reanimated';
-import * as DocumentPicker from 'expo-document-picker'; import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Ionicons } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as FileSystem from 'expo-file-system/legacy'; import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
+import * as Haptics from 'expo-haptics';
 // project components
-import * as pdfcraft from '@/components/pdfcraft'; import { ClientForm } from '@/components/ui/form';
+import * as pdfcraft from '@/components/pdfcraft';
+import { ClientForm } from '@/components/ui/form';
 import { theme_homescreen as theme, Colors, Shape } from '@/components/theme';
 // interfaces
 export interface Doc { id: string; title: string; size: string; date: string; icon: string; color: string; uri: string; }
@@ -18,6 +23,7 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 	const [detected_fields, set_detected_fields] = useState<string[]>([]);
 	const [selected_doc, set_selected_doc] = useState<{ uri: string; title: string } | null>(null);
 	const [is_loaded, set_is_loaded] = useState(false);
+	const [is_converting, set_is_converting] = useState(false); // стейт блокировки во время конвертации
 
 	const handle_create_contract = async (form_data: Record<string, string>) => {
 		if (!selected_doc) { return }
@@ -27,6 +33,7 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 			if (generated_uri) {
 				const docx_title = generated_uri.split('/').pop() || `crafted_${selected_doc.title}`;
 				const pdf_title = docx_title.replace('.docx', '.pdf');
+				set_is_converting(true);
 				try {
 					const formData = new FormData();
 					formData.append('file', {
@@ -55,6 +62,7 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 					await FileSystem.writeAsStringAsync(pdf_uri, base64_data, {
 						encoding: FileSystem.EncodingType.Base64,
 					});
+					set_is_converting(false);
 					if (await Sharing.isAvailableAsync()) { await Sharing.shareAsync(pdf_uri) }
 				} catch (error) { alert('server is waking up, wait about 40 seconds and press the button again.') }
 			} else { alert('something went wrong while building :(') }
@@ -189,20 +197,28 @@ export const DocumentList = ({ query, on_count_change, is_menu_open }: DocumentL
 				</View>
 			}
 		/>
-		<View style={theme.fab_wrap}>
-			<Pressable
-				onPress={handle_pick_document}
-				style={({ pressed }) => [
-					theme.fab,
-					{ transform: [{ scale: pressed ? 0.92 : 1 }] }
-				]}
-				android_ripple={{ color: Colors.dark.onPrimary + '33', borderless: true }}>
-				<Ionicons name='add' size={32} color={Colors.dark.onPrimaryContainer}/>
-			</Pressable>
-		</View>
+		{!is_converting && (
+			<View style={theme.fab_wrap}>
+				<Pressable
+					onPress={handle_pick_document}
+					style={({ pressed }) => [
+						theme.fab,
+						{ transform: [{ scale: pressed ? 0.92 : 1 }] }
+					]}
+					android_ripple={{ color: Colors.dark.onPrimary + '33', borderless: true }}>
+					<Ionicons name='add' size={32} color={Colors.dark.onPrimaryContainer}/>
+				</Pressable>
+			</View>
+		)}
 		<ClientForm
 			visible={form_visible} on_close={() => set_form_visible(false)}
 			fields={detected_fields} on_submit={handle_create_contract}/>
+		{is_converting && (
+			<View style={theme.indicator}>
+				<ActivityIndicator size='large' color={Colors.dark.primary}/>
+				<Text style={theme.indicator_text}>crafting...</Text>
+			</View>
+		)}
 	</GestureHandlerRootView>
 	)
 }
