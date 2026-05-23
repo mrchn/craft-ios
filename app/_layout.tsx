@@ -8,7 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	const [fontsLoaded] = useFonts({
+	const [fontsLoaded, error] = useFonts({
 		GoogleSansRegular: require('../assets/fonts/googlesans-regular.ttf'),
 		GoogleSansBold: require('../assets/fonts/googlesans-bold.ttf'),
 		CaveatBold: require('../assets/fonts/caveat-bold.ttf')
