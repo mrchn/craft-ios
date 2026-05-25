@@ -19,6 +19,7 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+.eslintcache
 # macOS
 .DS_Store
 *.pem

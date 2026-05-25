@@ -1,16 +1,13 @@
-// @/components/ui/form
+// @/app/ui/form
 
-// react components
 import React, { useState, useEffect } from 'react';
-import { TextInput, ScrollView } from 'react-native';
-import { Modal, View, Text, Platform } from 'react-native';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import { KeyboardAvoidingView, useColorScheme } from 'react-native';
-
-// expo and project components
-import { Ionicons } from '@expo/vector-icons';
-import { form as theme } from '@/components/theme';
-import { Colors } from '@/components/theme/colors';
+import {Ionicons} from '@expo/vector-icons';
+import {form as theme} from '@/app/ui/theme';
+import {
+	TextInput, ScrollView,
+	Modal, View, Text, Platform, TouchableOpacity,
+	KeyboardAvoidingView, useColorScheme
+} from 'react-native';
 
 interface ClientFormProps {
 	visible: boolean; on_close: () => void; fields: string[];
@@ -52,17 +49,19 @@ export const ClientForm = ({
 				style={sx.safe} keyboardVerticalOffset={16}
 			>
 				<View style={sx.header}>
+					<View style={{ width: 24 }} />
 					<Text style={sx.title}></Text>
 					<TouchableOpacity onPress={on_close}>
 						<Ionicons
-							name='close' size={24} color='#FFF'
+							name='close-circle' size={48}
+							color={theme_mode === 'light' ? '#8E8E93' : '#48484A'}
 						/>
 					</TouchableOpacity>
 				</View>
 				<ScrollView
 					contentContainerStyle={sx.scroll_content}
 				>
-					<Text style={sx.section_title}>variables</Text>
+					<Text style={sx.section_title}>VARIABLES</Text>
 					{fields.length > 0 ? (
 						fields.map((field) => (
 							<TextInput
@@ -89,10 +88,11 @@ export const ClientForm = ({
 					<TouchableOpacity
 						style={sx.submit_btn} onPress={handle_submit}
 					>
-						<Text style={sx.submit_text}>craft</Text>
+						<Text style={sx.submit_text}>CRAFT</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAvoidingView>
 		</Modal>
 	)
 }
+export default function Route() { return null }

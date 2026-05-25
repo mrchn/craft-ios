@@ -1,14 +1,11 @@
-// @/components/ui/header
+// @/app/ui/header
 
-// react components
-import React, { useState, useRef } from 'react';
-import { TextInput, Animated, View } from 'react-native';
-import { Pressable, useColorScheme, Text } from 'react-native';
-
-// expo and project components
+import React, {useState, useRef} from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { home as theme } from '@/components/theme';
-import { Colors } from '@/components/theme/colors';
+import { home as theme } from '@/app/ui/theme';
+import {
+	TextInput, Animated, View, LayoutAnimation,
+	Pressable, useColorScheme, Text } from 'react-native';
 
 // описываем типы для пропсов хедера
 interface HeaderProps {
@@ -24,69 +21,57 @@ export const HeaderSearch = ({ query, set_query }: HeaderProps) => {
 	const sx = theme(theme_mode);
 
 	const [is_search_focused, set_is_search_focused] = useState(false);
-	const anim_cancel = useRef(new Animated.Value(0)).current;
 	const search_ref = useRef<TextInput>(null);
 
 	// анимации поиска
 	const on_focus = () => { // тыкаем на поиск
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+		setTimeout(() => {
 		set_is_search_focused(true);
-		Animated.spring(
-			anim_cancel,
-			{
-				toValue: 1, useNativeDriver: false,
-				speed: 20, bounciness: 4
-			}
-		).start();
+	}, 50);
 	};
 
 	const on_cancel = () => { // закрываем поиск
 		set_query('');
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+		setTimeout(() => {
 		set_is_search_focused(false);
 		search_ref.current?.blur();
-		Animated.spring(
-			anim_cancel,
-			{
-				toValue: 0, useNativeDriver: false,
-				speed: 20, bounciness: 4
-			}
-		).start();
+	}, 50);
 	};
-
-	const cancel_width = anim_cancel.interpolate({
-		inputRange: [0, 1], outputRange: [0, 72]
-	});
-	const cancel_opacity = anim_cancel.interpolate({
-		inputRange: [0, 0.5, 1], outputRange: [0, 0, 1]
-	});
 
 	return (
 		<View style={sx.search_row}>
 			<View style={sx.search_blur}>
 				<Ionicons
 					name='search' size={16}
-					color={Colors.dark.onSurfaceVariant}
-					style={{ marginLeft: 10 }}
+					color={sx.title.color}
+					style={{ marginLeft: 20 }}
 				/>
 				<TextInput
 					ref={search_ref} style={sx.search_input}
-					placeholder='search' onFocus={on_focus}
-					placeholderTextColor={Colors.dark.onSurfaceVariant}
+					placeholder='search for templates...'
+					onFocus={on_focus}
+					placeholderTextColor={sx.title.color}
 					value={query} onChangeText={set_query}
 					onBlur={() => !query && on_cancel()}
 					returnKeyType='search' clearButtonMode='never'
-					selectionColor={Colors.dark.primary}
+					selectionColor={sx.cancel_text.color}
 				/>
 			</View>
-			<Animated.View
+			<View
 				style={{
-					width: cancel_width, opacity: cancel_opacity,
+					width: is_search_focused ? 72 : 0,
+					opacity: is_search_focused ? 1 : 0,
 					overflow: 'hidden'
 				}}
 			>
 				<Pressable onPress={on_cancel} style={sx.cancel_btn}>
 					<Text style={sx.cancel_text}>cancel</Text>
 				</Pressable>
-			</Animated.View>
+			</View>
 		</View>
 	);
 }
+
+export default function Route() { return null }

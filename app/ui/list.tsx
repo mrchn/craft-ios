@@ -1,14 +1,14 @@
-// @/components/ui/list
+// @/app/ui/list
 
-// react components
-import React, { useState, useEffect, useCallback } from 'react';
-import { FlatList, Pressable, View, Text, Alert } from 'react-native';
-import { ActivityIndicator, useColorScheme } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { FadeInDown, LinearTransition } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, {useState, useEffect, useCallback} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import Animated, {
+	FadeIn, FadeOut,
+	FadeInDown, LinearTransition } from 'react-native-reanimated';
+import {
+	FlatList, Pressable, View, Text, Alert,
+	ActivityIndicator, useColorScheme } from 'react-native';
 
 // expo components
 import { Ionicons } from '@expo/vector-icons';
@@ -18,11 +18,9 @@ import * as Sharing from 'expo-sharing';
 import * as Haptics from 'expo-haptics';
 
 // project components
-import * as pdfcraft from '@/components/pdfcraft';
-import { ClientForm } from '@/components/ui/form';
-import { home as theme } from '@/components/theme';
-import { Colors } from '@/components/theme/colors';
-import { Shape } from '@/components/theme/shapes';
+import * as pdfcraft from '@/app/pdfcraft';
+import { ClientForm } from '@/app/ui/form';
+import { home as theme } from '@/app/ui/theme';
 
 // interfaces
 export interface Doc {
@@ -31,20 +29,17 @@ export interface Doc {
 	uri: string;
 }
 interface DocumentListProps {
-	query: string; is_menu_open: boolean;
-	on_count_change: (count: number) => void
+	query: string; on_count_change: (count: number) => void
 }
 
 export const DocumentList = ({
-	query, on_count_change, is_menu_open
-	}: DocumentListProps) => {
+	query, on_count_change }: DocumentListProps) => {
 
 	// dynamic theme
 	const system_scheme = useColorScheme();
 	const theme_mode:ThemeType=system_scheme==='dark'?'dark':'light';
 	const sx = theme(theme_mode);
 
-	const insets = useSafeAreaInsets();
 	const [documents, set_documents] = useState<Doc[]>([]);
 	const [form_visible, set_form_visible] = useState(false);
 	const [
@@ -62,7 +57,7 @@ export const DocumentList = ({
 		if (!selected_doc) { return }
 		set_form_visible(false);
 		setTimeout(async () => {
-			const generated_uri = await pdfcraft.generate_docx(
+			const generated_uri = await pdfcraft.gen_docx(
 				selected_doc.uri, form_data, selected_doc.title
 				);
 			if (generated_uri) {
@@ -91,15 +86,15 @@ export const DocumentList = ({
 					}
 					const arrayBuffer = await response.arrayBuffer();
 					const uint8 = new Uint8Array(arrayBuffer); const chunks: string[] = [];
-					for (let i = 0; i < uint8.length; i += 8192) {
-						chunks.push(String.fromCharCode.apply(null, uint8.subarray(i, i + 8192)));
+					for (let i = 0; i < uint8.length; i += 1024) {
+						chunks.push(String.fromCharCode.apply(null, uint8.subarray(i, i + 1024)));
 					}
 					const base64_data = btoa(chunks.join(''));
 					const pdf_uri = `${FileSystem.documentDirectory}${pdf_title}`;
 					await FileSystem.writeAsStringAsync(pdf_uri, base64_data, { encoding: FileSystem.EncodingType.Base64 });
 					set_is_converting(false);
 					if (await Sharing.isAvailableAsync()) { await Sharing.shareAsync(pdf_uri) };
-				} catch (error) {
+				} catch {
 					Alert.alert('SERVER IS WAKING UP', 'wait about 40 seconds and press the button again.', [{ text: 'OK' }])
 				}
 			} else { Alert.alert(':(', 'something went wrong while building.', [{ text: 'OK' }]) }
@@ -180,9 +175,8 @@ export const DocumentList = ({
 	const render_right_actions = useCallback((id: string) => (
 		<Pressable
 			onPress={() => handle_delete_document(id)}
-			android_ripple={{color: 'rgba(255,255,255,0.2)'}}
 			style={{
-				backgroundColor: Colors.dark.error,
+				backgroundColor: 'red',
 				justifyContent: 'center',
 				alignItems: 'center',
 				width: 80, height: '100%',
@@ -200,8 +194,8 @@ export const DocumentList = ({
 			entering={FadeInDown.duration(300).springify()}
 			layout={LinearTransition.springify()}
 			style={{
-				borderRadius: Shape.large,
-				overflow: 'hidden', marginBottom: 12
+				borderRadius: 12,
+				overflow: 'hidden', marginBottom: 8
 			}}
 		>
 		<Swipeable
@@ -215,13 +209,10 @@ export const DocumentList = ({
 					set_selected_doc({
 						uri: item.uri, title: item.title
 					});
-					const fields=await pdfcraft.parse_docx_templates(
-						item.uri
-					);
+					const fields=await pdfcraft.parse_docx(item.uri);
 					set_detected_fields(fields);
 					set_form_visible(true);
 				}}
-				android_ripple={{ color: Colors.dark.onSurface + '1A' }}
 				style={[sx.row]}
 			>
 				<View style={[sx.icon_wrap, { backgroundColor: item.color + '22' }]}>
@@ -231,6 +222,10 @@ export const DocumentList = ({
 					<Text style={sx.row_title} numberOfLines={1}>{item.title}</Text>
 					<Text style={sx.row_sub}>{item.size} · {item.date}</Text>
 				</View>
+				<Ionicons
+					name='chevron-forward' size={16}
+					color={theme_mode === 'light' ? '#C4C4C6' : '#3A3A3C'} 
+					style={{ marginLeft: 8 }}/>
 			</Pressable>
 		</Swipeable>
 		</Animated.View>
@@ -245,8 +240,7 @@ export const DocumentList = ({
 				filtered.length > 0 ? (
 					<Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)} style={sx.list_header}>
 						<Text style={sx.section_label}>
-							{filtered.length} {filtered.length === 1 ? 'document' : 'documents'}
-							{is_menu_open && ' (docx files)'}
+							{filtered.length} {filtered.length === 1 ? 'DOCUMENT' : 'DOCUMENTS'}
 						</Text>
 					</Animated.View>
 				) : null
@@ -254,7 +248,7 @@ export const DocumentList = ({
 			style={sx.list}
 			ListEmptyComponent={
 				<View style={sx.empty}>
-					<Ionicons name='folder-open-outline' size={48} color={Colors.dark.onSurfaceVariant}/>
+					<Ionicons name='folder-open-outline' size={48} color={sx.section_label.color}/>
 					<Text style={sx.empty_text}>no documents found</Text>
 				</View>
 			}
@@ -266,9 +260,8 @@ export const DocumentList = ({
 					style={({ pressed }) => [
 						sx.fab,
 						{ transform: [{ scale: pressed ? 0.92 : 1 }] }
-					]}
-					android_ripple={{ color: Colors.dark.onPrimary + '33', borderless: true }}>
-					<Ionicons name='add' size={32} color={Colors.dark.onPrimaryContainer}/>
+					]}>
+					<Ionicons name='add' size={32} color='#FFFFFF'/>
 				</Pressable>
 			</View>
 		)}
@@ -281,10 +274,12 @@ export const DocumentList = ({
 					position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
 					backgroundColor: 'rgba(0,0,0,0.6)',
 					justifyContent: 'center', alignItems: 'center', zIndex: 9999, elevation: 9999, }}>
-				<ActivityIndicator size='large' color={Colors.dark.primary} />
-				<Text style={{ color: Colors.dark.onSurface, marginTop: 16, fontFamily: 'GoogleSansBold' }}>crafting</Text>
+				<ActivityIndicator size='large' color={sx.title.color} />
+				<Text style={{ color: sx.title.color, marginTop: 16, fontFamily: 'ui-monospace' }}>crafting</Text>
 			</View>
 		)}
 	</GestureHandlerRootView>
 	)
 }
+
+export default function Route() { return null }

@@ -1,51 +1,27 @@
 // @/app/_layout
 
-// react components
-import React, { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
-import { ThemeProvider } from '@react-navigation/native';
+import {useEffect} from 'react';
 import 'react-native-reanimated';
-
-// expo components
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-
-SplashScreen.preventAutoHideAsync();
+import {Stack} from 'expo-router';
+import Constants from 'expo-constants';
+import {StatusBar} from 'expo-status-bar';
+import {useColorScheme, Settings, Platform} from 'react-native';
+import {
+	DarkTheme, DefaultTheme,
+	ThemeProvider } from '@react-navigation/native';
 
 export default function RootLayout() {
-
-	// шрифты приложения
-	const [fontsLoaded, error] = useFonts({
-		GoogleSansRegular:
-			require('../assets/fonts/googlesans-regular.ttf'),
-		GoogleSansBold:
-			require('../assets/fonts/googlesans-bold.ttf'),
-		CaveatBold:
-			require('../assets/fonts/caveat-bold.ttf')
-	});
-
-	const colorScheme = useColorScheme();
-
-	// splash прячется как только шрифты загружены
-	useEffect(() => {
-		if (fontsLoaded || error) { SplashScreen.hideAsync() }
-	}, [fontsLoaded, error]);
-
-	if (!fontsLoaded && !error) { return null; }
-
+	const theme = useColorScheme()==='dark'?DarkTheme:DefaultTheme
+	useEffect(() => { if (Platform.OS === 'ios') {
+		const version = Constants.expoConfig?.version ?? 'undefined';
+		Settings.set({app_version: `${version}`});
+	}}, []);
 	return (
-		<ThemeProvider
-			value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-		>
-			<Stack>
-				<Stack.Screen
-					name='index' options={{ headerShown: false }}
-				/>
-			</Stack>
-			<StatusBar style='auto'/>
-		</ThemeProvider>
+	<ThemeProvider value={theme}>
+		<Stack>
+			<Stack.Screen name='index' options={{headerShown:false}}/>
+		</Stack>
+		<StatusBar style='auto'/>
+	</ThemeProvider>
 	);
 }
