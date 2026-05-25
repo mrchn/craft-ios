@@ -1,5 +1,5 @@
 // @/app/_layout
-
+import '@/app/locales';
 import {useEffect} from 'react';
 import 'react-native-reanimated';
 import {Stack} from 'expo-router';

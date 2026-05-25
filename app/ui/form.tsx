@@ -8,6 +8,7 @@ import {
 	Modal, View, Text, Platform, TouchableOpacity,
 	KeyboardAvoidingView, useColorScheme
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 interface ClientFormProps {
 	visible: boolean; on_close: () => void; fields: string[];
@@ -17,7 +18,7 @@ interface ClientFormProps {
 export const ClientForm = ({
 		visible, on_close, fields = [], on_submit
 	}: ClientFormProps) => {
-
+	const { t, i18n } = useTranslation();
 	// dynamic theme
 	const system_scheme = useColorScheme();
 	const theme_mode:ThemeType=system_scheme==='dark'?'dark':'light';
@@ -62,7 +63,7 @@ export const ClientForm = ({
 					contentContainerStyle={sx.scroll_content}
 				>
 					<Text style={sx.section_title}>
-						DOCUMENT VARIABLES
+						{t('documentVariables')}
 					</Text>
 					{fields.length > 0 ? (
 						fields.map((field) => (
@@ -82,7 +83,7 @@ export const ClientForm = ({
 						))
 					) : (
 						<Text style={sx.fields_empty}>
-							fields is empty :(
+							{t('fieldsEmpty')}
 						</Text>
 					)}
 				</ScrollView>
@@ -90,7 +91,9 @@ export const ClientForm = ({
 					<TouchableOpacity
 						style={sx.submit_btn} onPress={handle_submit}
 					>
-						<Text style={sx.submit_text}>CRAFT</Text>
+						<Text style={sx.submit_text}>
+							{t('craft')}
+						</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAvoidingView>

@@ -59,11 +59,7 @@ export const home = (mode: Theme) => {
 			color: c.text, fontSize: 17,
 			paddingHorizontal: 16
 		},
-		cancel_btn: { paddingHorizontal: 8 },
-		cancel_text: {
-			color: c.text, fontSize: 14,
-			fontFamily: 'ui-monospace'
-		},
+		cancel_text: { color: c.text },
 		list_header: { marginBottom: 8 },
 		list_content: {
 			flexGrow: 1,

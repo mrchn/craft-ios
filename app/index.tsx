@@ -1,13 +1,15 @@
 // @/app/index
 import React, {useState, useRef} from 'react';
-import {View, Text, TextInput, Pressable} from 'react-native';
+import {View, Text, TextInput} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 import {Ionicons} from '@expo/vector-icons';
 import {DocumentList} from '@/app/ui/list';
 import {useAppTheme, home as theme} from '@/app/ui/theme';
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
+	const { t, i18n } = useTranslation();
 	const sx = useAppTheme(theme);
 	const [query, set_query] = useState('');
 	const [has_docs, set_has_docs] = useState(false);
@@ -42,7 +44,7 @@ export default function HomeScreen() {
 				/>
 				<TextInput
 					ref={search_ref} style={sx.search_input}
-					placeholder='search for templates...'
+					placeholder={t('search')}
 					onFocus={on_focus}
 					placeholderTextColor={sx.title.color}
 					value={query} onChangeText={set_query}
@@ -50,17 +52,6 @@ export default function HomeScreen() {
 					returnKeyType='search' clearButtonMode='never'
 					selectionColor={sx.cancel_text.color}
 				/>
-			</View>
-			<View
-				style={{
-					width: is_search_focused ? 72 : 0,
-					opacity: is_search_focused ? 1 : 0,
-					overflow: 'hidden'
-				}}
-			>
-				<Pressable onPress={on_cancel} style={sx.cancel_btn}>
-					<Text style={sx.cancel_text}>cancel</Text>
-				</Pressable>
 			</View>
 		</View>
 		</Animated.View>

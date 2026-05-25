@@ -18,6 +18,7 @@ import * as Sharing from 'expo-sharing';
 import * as Haptics from 'expo-haptics';
 
 // project components
+import { useTranslation } from 'react-i18next';
 import * as pdfcraft from '@/app/pdfcraft';
 import { ClientForm } from '@/app/ui/form';
 import { home as theme } from '@/app/ui/theme';
@@ -34,7 +35,7 @@ interface DocumentListProps {
 
 export const DocumentList = ({
 	query, on_count_change }: DocumentListProps) => {
-
+	const { t, i18n } = useTranslation();
 	// dynamic theme
 	const system_scheme = useColorScheme();
 	const theme_mode:ThemeType=system_scheme==='dark'?'dark':'light';
@@ -243,7 +244,7 @@ export const DocumentList = ({
 			ListEmptyComponent={
 				<View style={sx.empty}>
 					<Ionicons name='folder-open-outline' size={48} color={sx.section_label.color}/>
-					<Text style={sx.empty_text}>no documents found</Text>
+					<Text style={sx.empty_text}>{t('docsNotFound')}</Text>
 				</View>
 			}
 		/>

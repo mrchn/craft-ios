@@ -14,7 +14,6 @@ module.exports = function withSettingsBundle(config) {
 			fs.cpSync(
 				srcDir, destDir, { recursive: true, force: true }
 				);
-
 		} else {
 			console.warn(`[settingsbundle] dir not found: ${srcDir}`);
 		}
@@ -24,6 +23,13 @@ module.exports = function withSettingsBundle(config) {
 				xcodeProject.pbxCreateGroup('Resources', '""')
 			}
 			xcodeProject.addResourceFile('Settings.bundle')
+		}
+		const res = xcodeProject.getFirstProject().firstProject;
+		if (res && res.knownRegions) {
+			if (!res.knownRegions.includes('ru')) {
+				res.knownRegions.push('ru');
+				console.log('[settingsbundle] added ru')
+			}
 		}
 		return config
 	})
