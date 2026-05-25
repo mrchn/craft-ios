@@ -19,7 +19,7 @@ const languageDetector = {
 		}).catch(() => {callback('en')})
 	}, cacheUserLanguage: (language) => {
 		AsyncStorage.setItem(LANGUAGE_KEY, language).catch(() => {})
-	},
+	}
 };
 
 i18n.use(languageDetector).use(initReactI18next).init({

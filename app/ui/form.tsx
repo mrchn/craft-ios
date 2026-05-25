@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import {Ionicons} from '@expo/vector-icons';
-import {form as theme} from '@/app/ui/theme';
+import {useAppTheme, form as theme} from '@/app/ui/theme';
 import {
 	TextInput, ScrollView,
 	Modal, View, Text, Platform, TouchableOpacity,
-	KeyboardAvoidingView, useColorScheme
+	KeyboardAvoidingView
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -18,11 +18,8 @@ interface ClientFormProps {
 export const ClientForm = ({
 		visible, on_close, fields = [], on_submit
 	}: ClientFormProps) => {
-	const { t, i18n } = useTranslation();
-	// dynamic theme
-	const system_scheme = useColorScheme();
-	const theme_mode:ThemeType=system_scheme==='dark'?'dark':'light';
-	const sx = theme(theme_mode);
+	const {t} = useTranslation();
+	sx = useAppTheme(theme);
 
 	const [ // стейты полей в форме
 		form_data, set_form_data

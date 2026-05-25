@@ -77,7 +77,7 @@ export const home = (mode: Theme) => {
 			paddingVertical: 20, paddingHorizontal: 16
 		},
 		icon_wrap: {
-			backgroundColor: c.accent, borderRadius: 8,
+			backgroundColor: c.text, borderRadius: 8,
 			width: 36, height: 36, marginRight: 12,
 			alignItems: 'center', justifyContent: 'center',
 		},
@@ -172,7 +172,7 @@ export const form = (mode: ThemeType) => {
 
 			borderWidth: 1,
 			borderColor: mode === 'light' ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.25)',
-			shadowColor: c.accent,
+			shadowColor: c.text,
 	shadowOffset: { width: 0, height: 6 },
 	shadowOpacity: mode === 'light' ? 0.25 : 0.4,
 	shadowRadius: 12,

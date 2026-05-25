@@ -9,11 +9,11 @@ import {useAppTheme, home as theme} from '@/app/ui/theme';
 import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
-	const { t, i18n } = useTranslation();
+	const {t} = useTranslation();
 	const sx = useAppTheme(theme);
 	const [query, set_query] = useState('');
 	const [has_docs, set_has_docs] = useState(false);
-	const [is_search_focused, set_is_search_focused] = useState(false);
+	const [set_is_search_focused] = useState(false);
 	const search_ref = useRef<TextInput>(null);
 
 	const on_focus = () => {

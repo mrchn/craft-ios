@@ -8,7 +8,7 @@ import Animated, {
 	FadeInDown, LinearTransition } from 'react-native-reanimated';
 import {
 	FlatList, Pressable, View, Text, Alert,
-	ActivityIndicator, useColorScheme } from 'react-native';
+	ActivityIndicator } from 'react-native';
 
 // expo components
 import { Ionicons } from '@expo/vector-icons';
@@ -21,7 +21,7 @@ import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 import * as pdfcraft from '@/app/pdfcraft';
 import { ClientForm } from '@/app/ui/form';
-import { home as theme } from '@/app/ui/theme';
+import { useAppTheme, home as theme } from '@/app/ui/theme';
 
 // interfaces
 export interface Doc {
@@ -35,11 +35,9 @@ interface DocumentListProps {
 
 export const DocumentList = ({
 	query, on_count_change }: DocumentListProps) => {
-	const { t, i18n } = useTranslation();
+	const {t} = useTranslation();
 	// dynamic theme
-	const system_scheme = useColorScheme();
-	const theme_mode:ThemeType=system_scheme==='dark'?'dark':'light';
-	const sx = theme(theme_mode);
+	sx = useAppTheme(theme);
 
 	const [documents, set_documents] = useState<Doc[]>([]);
 	const [form_visible, set_form_visible] = useState(false);
