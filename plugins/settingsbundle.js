@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { withXcodeProject } = require('@expo/config-plugins');
+const {withXcodeProject} = require('@expo/config-plugins');
 
 module.exports = function withSettingsBundle(config) {
 	return withXcodeProject(config, async (config) => {
@@ -10,13 +10,19 @@ module.exports = function withSettingsBundle(config) {
 		const iosRoot = config.modRequest.platformProjectRoot;
 		const srcDir = path.join(projectRoot, 'ios-settings');
 		const destDir = path.join(iosRoot, 'Settings.bundle');
-		if (!fs.existsSync(destDir)) fs.mkdirSync(destDir);
-		fs.copyFileSync(
-			path.join(srcDir, 'Root.plist'),
-			path.join(destDir, 'Root.plist')
-			);
+		if (fs.existsSync(srcDir)) {
+			fs.cpSync(
+				srcDir, destDir, { recursive: true, force: true }
+				);
+
+		} else {
+			console.warn(`[settingsbundle] dir not found: ${srcDir}`);
+		}
 		const xcodeProject = config.modResults;
 		if (!xcodeProject.hasFile('Settings.bundle')) {
+			if (!xcodeProject.pbxGroupByName('Resources')) {
+				xcodeProject.pbxCreateGroup('Resources', '""')
+			}
 			xcodeProject.addResourceFile('Settings.bundle')
 		}
 		return config
