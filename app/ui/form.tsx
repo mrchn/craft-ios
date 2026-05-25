@@ -19,7 +19,7 @@ export const ClientForm = ({
 		visible, on_close, fields = [], on_submit
 	}: ClientFormProps) => {
 	const {t} = useTranslation();
-	sx = useAppTheme(theme);
+	const sx = useAppTheme(theme);
 
 	const [ // стейты полей в форме
 		form_data, set_form_data
@@ -51,8 +51,9 @@ export const ClientForm = ({
 					<Text style={sx.title}></Text>
 					<TouchableOpacity onPress={on_close}>
 						<Ionicons
-							name='close-circle' size={48}
-							color={theme_mode === 'light' ? '#8E8E93' : '#48484A'}
+							name='close-circle'
+							size={sx.closeBtn.size}
+							color={sx.closeBtn.color}
 						/>
 					</TouchableOpacity>
 				</View>

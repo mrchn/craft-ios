@@ -5,11 +5,13 @@ export const Colors = {
 	light: {
 		bg: '#F2F2F7', bgBlur: 'rgba(255, 255, 255, 0.6)',
 		text: '#000000', info: '#8E8E93', card: '#FFFFFF',
-		highlight: 'rgba(255, 255, 255, 0.8)'
+		highlight: 'rgba(255, 255, 255, 0.8)',
+		btn: 'rgba(0, 0, 0, 0.32)', btnInner: '#848487'
 	}, dark: {
 		bg: '#000000', bgBlur: 'rgba(44, 44, 46, 0.6)',
 		text: '#FFFFFF', info: '#8E8E93', card: '#1C1C1E',
-		highlight: 'rgba(255, 255, 255, 0.2)'
+		highlight: 'rgba(255, 255, 255, 0.2)',
+		btn: 'rgba(255, 255, 255, 0.35)', btnInner: '#A2A2A5'
 	}
 } as const;
 
@@ -161,7 +163,7 @@ export const form = (mode: ThemeType) => {
 		// FILLED BUTTON — m3 primary action
 		submit_btn_wrap: {
 			paddingHorizontal: 20,
-			paddingBottom: Platform.OS === 'ios' ? 50 : 20,
+			paddingBottom: Platform.OS === 'ios' ? 70 : 50,
 		},
 		submit_btn: {
 			alignSelf: 'center', backgroundColor: c.text,
@@ -173,9 +175,9 @@ export const form = (mode: ThemeType) => {
 			borderWidth: 1,
 			borderColor: mode === 'light' ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.25)',
 			shadowColor: c.text,
-	shadowOffset: { width: 0, height: 6 },
-	shadowOpacity: mode === 'light' ? 0.25 : 0.4,
-	shadowRadius: 12,
+			shadowOffset: { width: 0, height: 6 },
+			shadowOpacity: mode === 'light' ? 0.25 : 0.4,
+			shadowRadius: 12,
 		},
 		submit_text: {
 			color: c.bg, fontSize: 17, fontWeight: '600',
@@ -190,7 +192,8 @@ export const form = (mode: ThemeType) => {
 		indicator_text: {
 			color: c.text,
 			marginTop: 16, fontFamily: 'ui-monospace'
-		}
+		},
+		closeBtn: { size: 48, color: c.btn }
 	}))
 };
 

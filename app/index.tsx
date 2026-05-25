@@ -6,26 +6,14 @@ import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 import {Ionicons} from '@expo/vector-icons';
 import {DocumentList} from '@/app/ui/list';
 import {useAppTheme, home as theme} from '@/app/ui/theme';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export default function HomeScreen() {
 	const {t} = useTranslation();
 	const sx = useAppTheme(theme);
 	const [query, set_query] = useState('');
 	const [has_docs, set_has_docs] = useState(false);
-	const [set_is_search_focused] = useState(false);
 	const search_ref = useRef<TextInput>(null);
-
-	const on_focus = () => {
-		set_is_search_focused(true);
-	};
-
-	const on_cancel = () => {
-		set_query('');
-		set_is_search_focused(false);
-		search_ref.current?.blur();
-	};
-
 	return (
 	<View style={[sx.root, {paddingTop: useSafeAreaInsets().top}]}>
 		<View style={sx.header}>
@@ -36,24 +24,22 @@ export default function HomeScreen() {
 			entering={FadeIn.duration(250)}
 			exiting={FadeOut.duration(200)}>
 			<View style={sx.search_row}>
-			<View style={sx.search}>
-				<Ionicons
-					name='search' size={16}
-					color={sx.title.color}
-					style={{ marginLeft: 20 }}
-				/>
-				<TextInput
-					ref={search_ref} style={sx.search_input}
-					placeholder={t('search')}
-					onFocus={on_focus}
-					placeholderTextColor={sx.title.color}
-					value={query} onChangeText={set_query}
-					onBlur={() => !query && on_cancel()}
-					returnKeyType='search' clearButtonMode='never'
-					selectionColor={sx.cancel_text.color}
-				/>
+				<View style={sx.search}>
+					<Ionicons
+						name='search' size={16}
+						color={sx.title.color}
+						style={{ marginLeft: 20 }}
+					/>
+					<TextInput
+						ref={search_ref} style={sx.search_input}
+						placeholder={t('search')}
+						placeholderTextColor={sx.title.color}
+						value={query} onChangeText={set_query}
+						returnKeyType='search' clearButtonMode='never'
+						selectionColor={sx.cancel_text.color}
+					/>
+				</View>
 			</View>
-		</View>
 		</Animated.View>
 		)}
 		<DocumentList

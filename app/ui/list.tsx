@@ -36,8 +36,7 @@ interface DocumentListProps {
 export const DocumentList = ({
 	query, on_count_change }: DocumentListProps) => {
 	const {t} = useTranslation();
-	// dynamic theme
-	sx = useAppTheme(theme);
+	const sx = useAppTheme(theme);
 
 	const [documents, set_documents] = useState<Doc[]>([]);
 	const [form_visible, set_form_visible] = useState(false);
@@ -128,10 +127,10 @@ export const DocumentList = ({
 	}, [documents, is_loaded]);
 
 	// удаление из списка по id
-	const handle_delete_document = (id: string) => {
+	const handle_delete_document = useCallback((id: string) => {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		set_documents((prev_docs) => prev_docs.filter((doc) => doc.id !== id));
-	};
+	}, []);
 
 	// и дальше добавление :>
 	const handle_pick_document = async () => {
@@ -177,7 +176,7 @@ export const DocumentList = ({
 			onPress={() => handle_delete_document(id)}>
 			<Ionicons name='trash' size={22} color='#FFF' />
 		</Pressable>
-	), []);
+	), [sx, handle_delete_document]);
 
 	// рендер карточек в списке
 	const render_item = useCallback(
@@ -217,7 +216,7 @@ export const DocumentList = ({
 				</View>
 				<Ionicons
 					name='chevron-forward' size={16}
-					color={theme_mode === 'light' ? '#C4C4C6' : '#3A3A3C'} 
+					color={sx.title.color} 
 					style={{ marginLeft: 8 }}/>
 			</Pressable>
 		</Swipeable>
