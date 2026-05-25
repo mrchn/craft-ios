@@ -7,7 +7,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  build-ios:
+  build-ios-unsigned:
     runs-on: macos-latest
 
     steps:
@@ -27,9 +27,20 @@ jobs:
         run: |
           npx expo prebuild --platform ios --clean --no-install
 
+      - name: Cache Xcode and Pods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-
+
       - name: Build unsigned .ipa using xcodebuild
         run: |
           cd ios
+          export COCOAPODS_DISABLE_STATS=1
           pod install --repo-update
 
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" | head -n 1)
@@ -43,9 +54,16 @@ jobs:
               -configuration Release \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
+              -disablePackageRepositoryValidation \
+              -parallelizeTargets \
+              -jobs 4 \
+              -quiet \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
-              CODE_SIGNING_ALLOWED=NO
+              CODE_SIGNING_ALLOWED=NO \
+              DEBUG_INFORMATION_FORMAT=dwarf \
+              COMPILER_INDEX_STORE_ENABLE=NO \
+              ONLY_ACTIVE_ARCH=YES
           else
             xcodebuild archive \
               -project "$PROJECT" \
@@ -53,9 +71,16 @@ jobs:
               -configuration Release \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
+              -disablePackageRepositoryValidation \
+              -parallelizeTargets \
+              -jobs 4 \
+              -quiet \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
-              CODE_SIGNING_ALLOWED=NO
+              CODE_SIGNING_ALLOWED=NO \
+              DEBUG_INFORMATION_FORMAT=dwarf \
+              COMPILER_INDEX_STORE_ENABLE=NO \
+              ONLY_ACTIVE_ARCH=YES
           fi
 
           cd build/pdfcraft-mobile.xcarchive/Products/Applications/
