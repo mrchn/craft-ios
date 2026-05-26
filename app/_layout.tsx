@@ -1,7 +1,7 @@
 // @/app/_layout
+import 'react-native-reanimated';
 import '@/app/locales';
 import {useEffect} from 'react';
-import 'react-native-reanimated';
 import {Stack} from 'expo-router';
 import Constants from 'expo-constants';
 import {StatusBar} from 'expo-status-bar';
