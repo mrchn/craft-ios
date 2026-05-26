@@ -3,24 +3,22 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Animated, {
-	FadeIn, FadeOut,
-	FadeInDown, LinearTransition } from 'react-native-reanimated';
+	FadeIn, FadeOut, FadeInDown,
+	LinearTransition } from 'react-native-reanimated';
 import {
 	FlatList, Pressable, View, Text, Alert,
-	ActivityIndicator } from 'react-native';
-
-// expo components
-import { Ionicons } from '@expo/vector-icons';
+	ActivityIndicator, Settings } from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import * as Haptics from 'expo-haptics';
-
-// project components
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import * as pdfcraft from '@/app/pdfcraft';
-import { ClientForm } from '@/app/ui/form';
-import { useAppTheme, home as theme } from '@/app/ui/theme';
+import {ClientForm} from '@/app/ui/form';
+import {useAppTheme, home as theme} from '@/app/ui/theme';
+
+const serverUrl = Settings.get('server_url') || 'https://pdfcraft-mobile-backend.onrender.com';
 
 // interfaces
 export interface Doc {
@@ -67,7 +65,7 @@ export const DocumentList = ({
 						uri: generated_uri, name: docx_title,
 						type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 					} as any);
-					const response = await fetch('https://pdfcraft-mobile-backend.onrender.com/convert', {
+					const response = await fetch(`${serverUrl}/convert`, {
 						method: 'POST', body: formData, headers: { 'Accept': 'application/pdf' },
 					});
 					const contentType = response.headers.get('content-type');
