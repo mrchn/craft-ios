@@ -9,26 +9,23 @@ import en from './en.json';
 
 const LANGUAGE_KEY = 'user-language';
 
-const languageDetector = {
-	type: 'languageDetector', async: true,
-	init: () => {}, detect: (callback) => {
-		AsyncStorage.getItem(LANGUAGE_KEY).then((savedLanguage) => {
-			if (savedLanguage) { return callback(savedLanguage) }
-			const systemLanguage = Localization.getLocales()[0]?.languageCode || 'en';
-			callback(systemLanguage);
-		}).catch(() => {callback('en')})
-	}, cacheUserLanguage: (language) => {
-		AsyncStorage.setItem(LANGUAGE_KEY, language).catch(() => {})
-	}
+const initI18n = async () => {
+	let lng = 'en';
+	try {
+		const saved = await AsyncStorage.getItem(LANGUAGE_KEY);
+		lng = saved ?? Localization.getLocales()[0]?.languageCode ?? 'en'
+	} catch {}
+
+	// eslint-disable-next-line import/no-named-as-default-member
+	await i18n.use(initReactI18next).init({
+		lng, resources: {
+			ru: { translation: ru },
+			en: { translation: en }
+		},
+		fallbackLng: 'en',
+		interpolation: { escapeValue: false }
+	});
 };
 
-i18n.use(languageDetector).use(initReactI18next).init({
-	resources: {
-		ru: { translation: ru },
-		en: { translation: en }
-	},
-	fallbackLng: 'en', compatibilityJSON: 'v4',
-	interpolation: { escapeValue: false }
-});
-
+initI18n();
 export default i18n;
