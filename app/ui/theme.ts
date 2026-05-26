@@ -121,7 +121,7 @@ export const home = (mode: Theme) => {
 	}))
 };
 
-export const form = (mode: ThemeType) => {
+export const form = (mode: Theme) => {
 	const key = `form_${mode}`;
 	if (cache[key]) return cache[key];
 	const c = Colors[mode];

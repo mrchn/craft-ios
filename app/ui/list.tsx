@@ -236,7 +236,6 @@ export const DocumentList = ({
 					</Animated.View>
 				) : null
 			}
-			style={sx.list}
 			ListEmptyComponent={
 				<View style={sx.empty}>
 					<Ionicons name='folder-open-outline' size={48} color={sx.section_label.color}/>
@@ -245,7 +244,7 @@ export const DocumentList = ({
 			}
 		/>
 		{!is_converting && (
-			<View style={sx.fab_wrap}>
+			<View>
 				<Pressable
 					onPress={handle_pick_document}
 					style={({ pressed }) => [
