@@ -1,7 +1,6 @@
 // @/app/ui/list
 
 import React, {useState, useEffect, useCallback} from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Animated, {
 	FadeIn, FadeOut,
@@ -224,7 +223,7 @@ export const DocumentList = ({
 	), [sx, render_right_actions]);
 
 	return (
-	<GestureHandlerRootView style={{ flex: 1 }}>
+	<View style={{flex: 1}}>
 		<FlatList
 			data={filtered} keyExtractor={(d) => d.id} renderItem={render_item}
 			contentContainerStyle={sx.list_content} showsVerticalScrollIndicator={false}
@@ -270,7 +269,7 @@ export const DocumentList = ({
 				<Text style={{ color: sx.title.color, marginTop: 16, fontFamily: 'ui-monospace' }}>crafting</Text>
 			</View>
 		)}
-	</GestureHandlerRootView>
+	</View>
 	)
 }
 
