@@ -31,13 +31,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ios/Pods
-          key: pods-${{ hashFiles('package-lock.json') }}
+          key: pods-${{ hashFiles('ios/Podfile.lock') }}
           restore-keys: pods-
 
       - name: Build unsigned .ipa using xcodebuild
         run: |
           cd ios
-          pod install
+          pod cache clean --all
+          npx expo pod-install
 
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" | head -n 1)
           PROJECT=$(find . -maxdepth 1 -name "*.xcodeproj" | head -n 1)
@@ -52,6 +53,7 @@ jobs:
               -destination generic/platform=iOS \
               -parallelizeTargets \
               -quiet \
+              -allowProvisioningUpdates \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \

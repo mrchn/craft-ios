@@ -5,6 +5,7 @@ import WebKit
 
 public class ConvertModule: Module {
 	private var webView: WKWebView?
+	private var currentDelegate: NavigationDelegate?
 	public func definition() -> ModuleDefinition {
 		Name("Convert")
 
@@ -24,9 +25,13 @@ public class ConvertModule: Module {
 				let delegate = NavigationDelegate(
 					outputUrl: outputUrl,
 					promise: promise
-				)
+				) { [weak self] in
+					self?.webView = nil
+					self?.currentDelegate = nil
+
+				}
+				self.currentDelegate = delegate
 				self.webView?.navigationDelegate = delegate
-				objc_setAssociatedObject(self.webView!, "navDelegate", delegate, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 			}
 		}
 	}
@@ -35,10 +40,16 @@ public class ConvertModule: Module {
 class NavigationDelegate: NSObject, WKNavigationDelegate {
 	let outputUrl: URL
 	let promise: Promise
+	let onComplete: () -> Void
 	
-	init(outputUrl: URL, promise: Promise) {
+	init(
+		outputUrl: URL,
+		promise: Promise,
+		onComplete: @escaping () -> Void
+	) {
 		self.outputUrl = outputUrl
 		self.promise = promise
+		self.onComplete = onComplete
 	}
 	
 	func webView(
@@ -47,26 +58,23 @@ class NavigationDelegate: NSObject, WKNavigationDelegate {
 	) {
 		if #available(iOS 14.5, *) {
 			let config = WKPDFConfiguration()
-			webView.createPDF(configuration: config) { result in
+			webView.createPDF(configuration: config) {
+				[weak self] result in
+				guard let self = self else { return }
 				switch result {
-				case .success(let data):
-					do {
-						try data.write(to: self.outputUrl)
-						self.promise.resolve(true)
-					} catch {
-						self.promise.reject(
-							"E_WRITE_ERROR",
-							"Failed to write PDF file"
-						)
-					}
-				case .failure(let error):
-					self.promise.reject(
-						"E_CONVERT_ERROR",
-						"PDF creation failed"
-					)
+					case .success(let data):
+						do {
+							try data.write(to: self.outputUrl)
+							self.promise.resolve(true)
+						} catch { self.promise.resolve(false) }
+					case .failure: self.promise.resolve(false)
 				}
+				self.onComplete()
 			}
-		} else { self.promise.resolve(false) }
+		} else {
+			self.promise.resolve(false)
+			self.onComplete()
+		}
 	}
 	
 	func webView(
@@ -74,9 +82,15 @@ class NavigationDelegate: NSObject, WKNavigationDelegate {
 		didFail navigation: WKNavigation!,
 		withError error: Error
 	) {
-		self.promise.reject(
-			"E_LOAD_ERROR",
-			"Failed to load DOCX in WebView"
-		)
+		self.promise.resolve(false)
+		self.onComplete()
+	}
+	func webView(
+		_ webView: WKWebView,
+		didFailProvisionalNavigation navigation: WKNavigation!,
+		withError error: Error
+	) {
+		self.promise.resolve(false)
+		self.onComplete()
 	}
 }

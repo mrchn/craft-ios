@@ -13,5 +13,5 @@ export async function localConvert (
 		const cleanDocx = docxPath.replace('file://', '');
 		const cleanOutput = outputPath.replace('file://', '');
 		return await Convert.convert(cleanDocx, cleanOutput);
-	} catch () { return false }
+	} catch { return false }
 }
