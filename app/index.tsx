@@ -3,11 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import * as Sharing from 'expo-sharing';
 import Animated, {
 	FadeIn, FadeOut, FadeInDown,
 	LinearTransition } from 'react-native-reanimated';
@@ -105,7 +103,7 @@ export default function HomeScreen() {
 	}, []);
 
 	// и дальше добавление :>
-	const { pick } = Picker({docs, setDocs});
+	const { pick, isLoading: is_picking } = Picker({docs, setDocs});
 
 	const filtered = docs.filter(
 		(d) => d.title.toLowerCase().includes(
@@ -139,12 +137,14 @@ export default function HomeScreen() {
 				style={[sx.row]}
 				onPress={async () => {
 					hapticTap();
-					set_picked_doc({
-						uri: item.uri, title: item.title
-					});
-					const fields=await Parse(item.uri);
-					set_detected_fields(fields);
-					set_form_visible(true);
+					const uri = item.uri;
+					const title = item.title;
+					set_picked_doc({ uri, title });
+					try {
+						const fields = await Parse(uri);
+						set_detected_fields(fields);
+						set_form_visible(true);
+					} catch { set_picked_doc(null) }
 				}}
 			>
 				<View
@@ -175,8 +175,10 @@ export default function HomeScreen() {
 		</Animated.View>
 	), [sx, render_right_actions]);
 
+	const insets = useSafeAreaInsets();
+
 	return (
-	<View style={[sx.root, {paddingTop: useSafeAreaInsets().top}]}>
+	<View style={[sx.root, {paddingTop: insets.top}]}>
 		<View style={sx.header}>
 			<Text style={sx.title}>Ready to craft</Text>
 		</View>
@@ -234,32 +236,23 @@ export default function HomeScreen() {
 					</View>
 				}
 			/>
-			{!is_converting && (
-				<Pressable
-					style={({ pressed }) => [
-					sx.fab,
-					{ transform: [{
-						scale:pressed?0.92:1
-					}]}]}
-					onPress={pick}>
-					<Ionicons
-						name='add' size={32}
-						color={sx.title.color}/>
+			<Pressable
+				style={({ pressed }) => [
+					sx.fab, { transform: [{ scale:pressed?0.92:1 }]}
+				]}
+				onPress={ pick }
+				disabled={ is_converting || is_picking }>
+				{ is_converting || is_picking
+				? <ActivityIndicator color={sx.title.color}/>
+				: <Ionicons
+					name='add' size={32}
+					color={sx.title.color}/>
+				}
 				</Pressable>
-			)}
 			<Form
 				visible={form_visible} fields={detected_fields}
 				on_close={() => set_form_visible(false)}
 				on_submit={create}/>
-			{is_converting && (
-				<View style={sx.indicator}>
-					<ActivityIndicator
-						size='large' color={sx.title.color}/>
-					<Text style={sx.indicator_text}>
-						crafting
-					</Text>
-				</View>
-			)}
 		</View>
 	</View>
 	)

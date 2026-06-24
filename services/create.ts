@@ -70,7 +70,7 @@ export async function Create({ doc, data, url, t }: Params) {
 		);
 
 		if (await Sharing.isAvailableAsync()) {
-			await Sharing.shareAsync(pdf_uri)
+			Sharing.shareAsync(pdf_uri)
 		};
 
 		await FileSystem.deleteAsync(uri, { idempotent: true })
