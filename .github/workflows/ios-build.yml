@@ -36,7 +36,6 @@ jobs:
 
       - name: Build unsigned .ipa using xcodebuild
         run: |
-          pod cache clean --all
           npx expo pod-install
           cd ios
 
