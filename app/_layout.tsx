@@ -17,14 +17,9 @@ export default function RootLayout() {
 	const theme = useColorScheme()==='dark'?DarkTheme:DefaultTheme
 
 	useEffect(() => { if (Platform.OS === 'ios') {
-		const version = Constants.expoConfig?
-			.version ?? 'undefined';
-		const buildNumber = Constants.expoConfig?
-			.ios.buildNumber ?? 'undefined';
-		Settings.set({
-			app_version: `${version}`,
-			app_build_number: `${buildNumber}`
-		})
+		const version = Constants.expoConfig?.version ?? 'undefined';
+		const buildNumber = Constants.expoConfig?.ios.buildNumber ?? 'undefined';
+		Settings.set({app_version: `${version}`, app_build_number: `${buildNumber}`})
 	}}, []);
 
 	return (
