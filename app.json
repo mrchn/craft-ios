@@ -11,7 +11,7 @@
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "ru.mrchn.craft",
-			"buildNumber": "49",
+			"buildNumber": "50",
 			"infoPlist": {
 				"ITSAppUsesNonExemptEncryption": false,
 				"CFBundleLocalizations": [
@@ -20,19 +20,6 @@
 				],
 				"CFBundleDevelopmentRegion": "en"
 			}
-		},
-		"android": {
-			"package": "ru.mrchn.craft",
-			"versionCode": 49,
-			"adaptiveIcon": {
-				"backgroundColor": "#FFFFFF",
-				"foregroundImage":
-					"./assets/icons/android-icon-foreground.png",
-				"monochromeImage":
-					"./assets/icons/android-icon-monochrome.png"
-			},
-			"edgeToEdgeEnabled": true,
-			"predictiveBackGestureEnabled": false
 		},
 		"plugins": [
 			"expo-router",
