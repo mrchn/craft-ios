@@ -1,7 +1,7 @@
 # @/modules/ios-native-convert/ios/ios-native-convert.podspec
 
 Pod::Spec.new do |s|
-  s.name           = 'IosNativeConvert'
+  s.name           = 'ios-native-convert'
   s.version        = '1.0.0'
   s.summary        = 'A sample project summary'
   s.description    = 'A sample project description'
@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
     'DEFINES_MODULE' => 'YES',
   }
 
-  s.source_files = "**/*.{h,m,mm,swift,hpp,cpp}"
+  s.source_files = "ios/**/*.{h,m,mm,swift}"
 end
