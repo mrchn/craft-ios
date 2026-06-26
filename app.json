@@ -11,7 +11,7 @@
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "ru.mrchn.craft",
-			"buildNumber": "45",
+			"buildNumber": "46",
 			"infoPlist": {
 				"ITSAppUsesNonExemptEncryption": false,
 				"CFBundleLocalizations": [
@@ -23,7 +23,7 @@
 		},
 		"android": {
 			"package": "ru.mrchn.craft",
-			"versionCode": 45,
+			"versionCode": 46,
 			"adaptiveIcon": {
 				"backgroundColor": "#FFFFFF",
 				"foregroundImage":
