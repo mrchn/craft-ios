@@ -35,7 +35,7 @@ jobs:
 
       - name: Debug Expo autolinking
         run: |
-          npx expo-modules-autolinking search --platform apple
+          npx expo-modules-autolinking search --platform apple --verbose
 
       - name: Generate native iOS project (expo-prebuild)
         run: |
