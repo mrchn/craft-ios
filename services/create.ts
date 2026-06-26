@@ -6,7 +6,7 @@ import * as Sharing from 'expo-sharing';
 
 import { DOCX_MIME } from '@/components';
 import { Parse, Generate } from './server';
-import { localConvert } from '@/modules/convert';
+import { localConvert } from '@/modules/ios-native-convert';
 
 type Params = {
 	doc: { uri: string; title: string; };

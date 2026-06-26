@@ -1,13 +1,13 @@
-// @/modules/convert/ConvertModule.swift (pdfcraft-mobile)
+// @/modules/ios-native-convert/ios/IosNativeConvertModule.swift (pdfcraft-mobile)
 
 import ExpoModulesCore
 import WebKit
 
-public class ConvertModule: Module {
+public class IosNativeConvertModule: Module {
 	private var webView: WKWebView?
 	private var currentDelegate: NavigationDelegate?
 	public func definition() -> ModuleDefinition {
-		Name("Convert")
+		Name("IosNativeConvert")
 
 		AsyncFunction("convert") { (
 			docxPath: String, outputPath: String, promise: Promise
@@ -22,11 +22,7 @@ public class ConvertModule: Module {
 						width: 816, height: 1056
 					)
 				)
-				self.webView?.loadFileURL(
-					docxUrl,
-					allowingReadAccessTo:
-						docxUrl.deletingLastPathComponent()
-				)
+
 				let delegate = NavigationDelegate(
 					outputUrl: outputUrl,
 					promise: promise
@@ -37,6 +33,12 @@ public class ConvertModule: Module {
 				}
 				self.currentDelegate = delegate
 				self.webView?.navigationDelegate = delegate
+
+				self.webView?.loadFileURL(
+					docxUrl,
+					allowingReadAccessTo:
+						docxUrl.deletingLastPathComponent()
+				)
 			}
 		}
 	}

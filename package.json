@@ -11,7 +11,7 @@
     "lint": "expo lint"
   },
   "dependencies": {
-    "expo-convert": "file:./modules/convert",
+    "ios-native-convert": "file:./modules/ios-native-convert",
     "@expo/vector-icons": "^15.1.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^7.1.8",
