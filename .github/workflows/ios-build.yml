@@ -41,6 +41,10 @@ jobs:
         run: |
           npx expo prebuild --platform ios --clean --no-install
 
+      - name: Check generated Podfile
+        run: |
+          grep -n "IosNativeConvert" ios/Podfile || true
+
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
@@ -48,11 +52,27 @@ jobs:
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
           restore-keys: pods-
 
-      - name: Build unsigned .ipa using xcodebuild
+      - name: Expo install (--check)
         run: |
           npx expo install --check
+
+      - name: Pod install
+        run: |
           cd ios
           pod install
+
+      - name: Check Podfile.lock
+        run: |
+          grep -n "IosNativeConvert" ios/Podfile.lock || true
+
+      - name: Check Pods project
+        run: |
+          find ios/Pods -iname "*IosNativeConvert*" || true
+          grep -R "IosNativeConvert" ios/Pods || true
+
+      - name: Build unsigned .ipa using xcodebuild
+        run: |
+          cd ios
 
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" | head -n 1)
           PROJECT=$(find . -maxdepth 1 -name "*.xcodeproj" | head -n 1)
