@@ -23,6 +23,20 @@ jobs:
       - name: Install dependencies (Node.js)
         run: npm ci
 
+      - name: Debug local module
+        run: |
+          pwd
+          ls -la
+          ls -la modules
+          ls -la modules/ios-native-convert
+          cat modules/ios-native-convert/package.json
+          cat modules/ios-native-convert/expo-module.config.json
+          npm ls ios-native-convert
+
+      - name: Debug Expo autolinking
+        run: |
+          npx expo-modules-autolinking search --platform apple
+
       - name: Generate native iOS project (expo-prebuild)
         run: |
           npx expo prebuild --platform ios --clean --no-install
