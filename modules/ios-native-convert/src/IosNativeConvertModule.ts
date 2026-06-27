@@ -9,7 +9,7 @@ interface IosNativeConvertModule {
 let mod: IosNativeConvertModule;
 let _loadError: string | null = null;
 
-try { mod = requireNativeModule<IosNativeConvertModule>('IosNativeConvert') }
+try { mod = requireNativeModule<IosNativeConvertModule>('ios-native-convert') }
 catch (e) {
 	_loadError = String(e);
 	mod = { convert: async () => false }

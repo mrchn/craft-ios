@@ -3,11 +3,12 @@
 import ExpoModulesCore
 import WebKit
 
+@objc(IosNativeConvertModule)
 public class IosNativeConvertModule: Module {
 	private var webView: WKWebView?
 	private var currentDelegate: NavigationDelegate?
 	public func definition() -> ModuleDefinition {
-		Name("IosNativeConvert")
+		Name("ios-native-convert")
 
 		AsyncFunction("convert") { (
 			docxPath: String, outputPath: String, promise: Promise
