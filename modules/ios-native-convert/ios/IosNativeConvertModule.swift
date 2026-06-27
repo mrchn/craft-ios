@@ -3,7 +3,6 @@
 import ExpoModulesCore
 import WebKit
 
-@objc(IosNativeConvertModule)
 public class IosNativeConvertModule: Module {
 	private var webView: WKWebView?
 	private var currentDelegate: NavigationDelegate?
