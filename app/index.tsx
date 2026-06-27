@@ -17,9 +17,9 @@ import { Create, Parse } from '@/services';
 import { useAppTheme, home as theme } from '@/theme';
 import { Form, Doc, Picker, hapticTap } from '@/components';
 
+const DB_URI = `${FileSystem.documentDirectory}doc_db.json`;
 const serverUrl = Settings.get('server_url')
-	? Settings.get('server_url')
-	: 'https://pdfcraft-mobile-backend.onrender.com';
+	|| 'https://pdfcraft-mobile-backend.onrender.com';
 
 export default function HomeScreen() {
 
@@ -50,47 +50,30 @@ export default function HomeScreen() {
 			})
 		} catch {
 			Alert.alert(
-				`${ t('serverIsWakingUp' )}`, `${ t('serverWait') }`,
-				[{ text: 'OK' }]
+				`${ t('serverIsWakingUp' )}`, `${ t('serverWait') }`
 			)
 		} finally {
 			set_is_converting(false);
-			set_picked_doc(null);
+			set_picked_doc(null)
 		}
 	};
 
-	useEffect(() => { // загрузка списка на старте
-		const load_documents = async () => {
-			try {
-				const db_uri = `${FileSystem.documentDirectory}doc_db.json`;
-				const info = await FileSystem.getInfoAsync(db_uri);
-				if (info.exists) {
-					const text_data = await FileSystem.readAsStringAsync(db_uri);
-					const saved_docs = JSON.parse(text_data);
-					if (Array.isArray(saved_docs)) {
-						setDocs(saved_docs)
-					}
-				}
-			} catch {} finally { set_is_loaded(true) }
-		}; load_documents()
-	}, []);
+	useEffect(() => { (async () => {
+		try {
+			if ((await FileSystem.getInfoAsync(DB_URI)).exists) {
+				const saved = JSON.parse(
+					await FileSystem.readAsStringAsync(DB_URI)
+				);
+				if (Array.isArray(saved)) setDocs(saved)
+			}
+		} catch {} finally { set_is_loaded(true) }
+	})()}, []);
 
-	useEffect(() => { // авто-save при изменении листа
-		if (!is_loaded) return;
-		let cancelled = false;
-		const save_documents = async () => {
-			try {
-				const db_uri = `${FileSystem.documentDirectory}doc_db.json`;
-				if (!cancelled) {
-					await FileSystem.writeAsStringAsync(
-						db_uri, JSON.stringify(docs)
-					)
-				}
-			} catch {}
-		};
-		save_documents()
-		return () => { cancelled = true }
-	}, [docs, is_loaded]);
+	useEffect(() => { if (is_loaded) {
+		FileSystem.writeAsStringAsync(
+			DB_URI, JSON.stringify(docs)
+		).catch(() => {})
+	}}, [docs, is_loaded]);
 
 	// удаление из списка по id
 	const handle_delete_document = useCallback((id: string) => {
