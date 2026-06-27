@@ -1,4 +1,4 @@
-// @/modules/ios-native-convert/ios/IosNativeConvertModule.swift (pdfcraft-mobile)
+// @/modules/ios-native-convert/ios/IosNativeConvertModule.swift
 
 import ExpoModulesCore
 import WebKit
@@ -18,14 +18,12 @@ public class IosNativeConvertModule: Module {
 
 				self.webView = WKWebView(
 					frame: CGRect(
-						x: 0, y: 0,
-						width: 816, height: 1056
+						x: 0, y: 0, width: 816, height: 1056
 					)
 				)
 
 				let delegate = NavigationDelegate(
-					outputUrl: outputUrl,
-					promise: promise
+					outputUrl: outputUrl, promise: promise
 				) { [weak self] in
 					self?.webView = nil
 					self?.currentDelegate = nil
@@ -50,54 +48,37 @@ class NavigationDelegate: NSObject, WKNavigationDelegate {
 	let onComplete: () -> Void
 	
 	init(
-		outputUrl: URL,
-		promise: Promise,
+		outputUrl: URL, promise: Promise,
 		onComplete: @escaping () -> Void
 	) {
-		self.outputUrl = outputUrl
-		self.promise = promise
+		self.outputUrl = outputUrl ; self.promise = promise
 		self.onComplete = onComplete
 	}
 	
 	func webView(
-		_ webView: WKWebView,
-		didFinish navigation: WKNavigation!
+		_ webView: WKWebView, didFinish navigation: WKNavigation!
 	) {
-		if #available(iOS 14.5, *) {
-			let config = WKPDFConfiguration()
-			webView.createPDF(configuration: config) {
-				[weak self] result in
-				guard let self = self else { return }
-				switch result {
-					case .success(let data):
-						do {
-							try data.write(to: self.outputUrl)
-							self.promise.resolve(true)
-						} catch { self.promise.resolve(false) }
-					case .failure: self.promise.resolve(false)
-				}
-				self.onComplete()
+		guard #available(iOS 14.5, *) else { return fail() }
+		webView.createPDF(configuration: WKPDFConfiguration()) {
+			[weak self] result in
+			guard let self = self else { return }
+			switch result {
+				case .success(let data): self.promise.resolve(
+					(try? data.write(to: self.outputUrl)) != nil
+				)
+				case .failure: self.promise.resolve(false)
 			}
-		} else {
-			self.promise.resolve(false)
 			self.onComplete()
 		}
 	}
+
+	private func fail() { promise.resolve(false); onComplete() }
 	
 	func webView(
-		_ webView: WKWebView,
-		didFail navigation: WKNavigation!,
-		withError error: Error
-	) {
-		self.promise.resolve(false)
-		self.onComplete()
-	}
+		_ w: WKWebView, didFail n: WKNavigation!, withError e: Error
+	) { fail() }
 	func webView(
-		_ webView: WKWebView,
-		didFailProvisionalNavigation navigation: WKNavigation!,
-		withError error: Error
-	) {
-		self.promise.resolve(false)
-		self.onComplete()
-	}
+		_ w: WKWebView, didFailProvisionalNavigation n: WKNavigation!,
+		withError e: Error
+	) { fail() }
 }
