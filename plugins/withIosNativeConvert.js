@@ -28,27 +28,31 @@ module.exports = function withIosNativeConvert(config) {
 				console.log('(!) Local pod injected into Podfile');
 			}
 
-			if (!podfileContent.includes('IosNativeConvertModule')) {
-				podfileContent += `
-post_install do |installer|
+			if (!podfileContent.includes('ios_native_convert')) {
+				const rubyCode = `
 	provider = File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-pdfcraft', 'ExpoModulesProvider.swift')
-	next unless File.exist?(provider)
-	content = File.read(provider)
-	next if content.include?('ios_native_convert')
-	content.gsub!('import ExpoModulesCore', "import ExpoModulesCore\\nimport ios_native_convert")
-	content.gsub!('return [', "return [\\n      IosNativeConvertModule.self,")
-	File.write(provider, content)
-	puts '(!) IosNativeConvertModule registered in ExpoModulesProvider.swift'
-end
-`;
+	if File.exist?(provider)
+		content = File.read(provider)
+		unless content.include?('ios_native_convert')
+		content.gsub!('import ExpoModulesCore', "import ExpoModulesCore\\nimport ios_native_convert")
+		content.gsub!('return [', "return [\\n      IosNativeConvertModule.self,")
+		File.write(provider, content)
+		puts '(!) IosNativeConvertModule registered in ExpoModulesProvider.swift'
+		end
+	end
+	`;
+
+				podfileContent = podfileContent.replace(
+					'post_install do |installer|',
+					`post_install do |installer|${rubyCode}`
+				);
 				changed = true;
-				console.log('(!) post_install hook injected');
+				console.log('(!) Safe post_install hook injected into existing block');
 			}
 
 			if (changed) {
 				fs.writeFileSync(podfilePath, podfileContent, 'utf8');
 			}
-
 			return config;
 		}
 	]);
