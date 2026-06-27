@@ -44,8 +44,7 @@ jobs:
 
           echo ""
           echo "=== Swift file in Pods dir ==="
-          find ios/Pods -name "IosNativeConvertModule.swift" \
-            || echo "Swift file NOT in Pods"
+          find ios -name "ExpoModulesProvider.swift" -exec grep -n -H "IosNativeConvert" {} +
 
       - name: Build unsigned .ipa using xcodebuild
         run: |
