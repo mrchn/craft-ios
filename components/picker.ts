@@ -23,42 +23,26 @@ export function Picker ({ docs, setDocs }: PickerProps) {
 				type: ['application/msword', DOCX_MIME],
 				copyToCacheDirectory: true
 			});
-			if (!res.canceled && res.assets && res.assets[0]) {
-				const pickedFile = res.assets[0];
-				const fileSizeBytes = pickedFile.size;
-				const alreadyExists = docs.some(
-					d => d.title === pickedFile.name
-				);
-				if (alreadyExists) {
-					Alert.alert(
-						':(', t('docExists'), [{ text: 'OK' }]
-					);
-					return
+			const file = res.assets?.[0];
+			if (!res.canceled && file) {
+				if (docs.some(d => d.title === file.name)) {
+					return Alert.alert(':(', t('docExists'))
 				}
-				let fileSizeFormatted = '0.1 MB';
-				if (fileSizeBytes) {
-					const sizeInMb = fileSizeBytes / (1024 * 1024);
-					fileSizeFormatted = sizeInMb < 0.1
-						? `${(fileSizeBytes / 1024).toFixed(0)} KB`
-						: `${sizeInMb.toFixed(1)} MB`
-				}
-				const newDoc: Doc = {
+				const kb = (file.size || 0) / 1024;
+				const fileSizeFormatted = kb < 102.4
+					? `${kb.toFixed(0)} KB`
+					: `${(kb / 1024).toFixed(1)} MB`;
+				setDocs(prev => [{
 					id: Date.now().toString(),
-					title: pickedFile.name,
-					size: fileSizeFormatted,
+					title: file.name, size: fileSizeFormatted,
 					date: `Today, ${new Date().toLocaleTimeString(
 						[], { hour: '2-digit', minute: '2-digit' }
-					)}`,
-					icon: 'document-text', color: '#1F4E79',
-					uri: pickedFile.uri
-				};
-				hapticTap();
-				setDocs(prev => [newDoc, ...prev])
+					)}`, icon: 'document-text', color: '#1F4E79',
+					uri: file.uri
+				}, ...prev]);
+				hapticTap()
 			}
-		} catch (error) {
-			console.error('Error picking document:', error);
-			Alert.alert(t('error'), t('failedToPickDocument'))
-		} finally { setIsLoading(false) }
+		} catch {} finally { setIsLoading(false) }
 	}, [docs, setDocs, t]);
 	return { pick, isLoading }
 }
