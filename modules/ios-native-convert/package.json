@@ -2,6 +2,7 @@
 	"name": "ios-native-convert",
 	"version": "1.0.0",
 	"main": "index.ts",
+	"plugin": "./app.plugin.js",
 	"private": true,
 	"exports": {
 		".": "./index.ts"
