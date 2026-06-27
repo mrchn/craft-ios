@@ -10,40 +10,46 @@ module.exports = function withIosNativeConvert(config) {
 		async (config) => {
 			const iosDir = config.modRequest.platformProjectRoot;
 			const podfilePath = path.join(iosDir, 'Podfile');
-			if (fs.existsSync(podfilePath)) {
-				let podfileContent = fs.readFileSync(podfilePath, 'utf8');
-				if (!podfileContent.includes("pod 'ios-native-convert'")) {
-					const searchString = "use_expo_modules!";
-					podfileContent = podfileContent.replace(
-						searchString,
-						`use_expo_modules!\n  pod 'ios-native-convert', :path => '../modules/ios-native-convert'`
-					);
-					fs.writeFileSync(podfilePath, podfileContent, 'utf8');
-					console.log('(!) Local pod successfully injected into Podfile')
-				}
+
+			if (!fs.existsSync(podfilePath)) {
+				console.warn('(!) Podfile not found');
+				return config;
 			}
 
-			const fallbackProviderPath = path.join(iosDir, '.expo', 'ExpoModulesProvider.swift');
-			const targetProvider = fs.existsSync(fallbackProviderPath) ? fallbackProviderPath : null;
+			let podfileContent = fs.readFileSync(podfilePath, 'utf8');
+			let changed = false;
 
-			if (!targetProvider) {
-				console.warn('(!) ExpoModulesProvider.swift not found — module NOT registered');
-				return config
-			}
-			let providerContent = fs.readFileSync(targetProvider, 'utf8');
-			if (!providerContent.includes('ios_native_convert')) {
-				providerContent = providerContent.replace(
-					'import ExpoModulesCore',
-					'import ExpoModulesCore\nimport ios_native_convert'
+			if (!podfileContent.includes("pod 'ios-native-convert'")) {
+				podfileContent = podfileContent.replace(
+					'use_expo_modules!',
+					`use_expo_modules!\n  pod 'ios-native-convert', :path => '../modules/ios-native-convert'`
 				);
-				providerContent = providerContent.replace(
-					'return [',
-					'return [\n      IosNativeConvertModule.self,'
-				);
-				fs.writeFileSync(targetProvider, providerContent, 'utf8');
-				console.log('(!) Module successfully registered in ExpoModulesProvider.swift')
+				changed = true;
+				console.log('(!) Local pod injected into Podfile');
 			}
-			return config
+
+			if (!podfileContent.includes('IosNativeConvertModule')) {
+				podfileContent += `
+post_install do |installer|
+	provider = File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-pdfcraft', 'ExpoModulesProvider.swift')
+	next unless File.exist?(provider)
+	content = File.read(provider)
+	next if content.include?('ios_native_convert')
+	content.gsub!('import ExpoModulesCore', "import ExpoModulesCore\\nimport ios_native_convert")
+	content.gsub!('return [', "return [\\n      IosNativeConvertModule.self,")
+	File.write(provider, content)
+	puts '(!) IosNativeConvertModule registered in ExpoModulesProvider.swift'
+end
+`;
+				changed = true;
+				console.log('(!) post_install hook injected');
+			}
+
+			if (changed) {
+				fs.writeFileSync(podfilePath, podfileContent, 'utf8');
+			}
+
+			return config;
 		}
-	])
-}
+	]);
+};
