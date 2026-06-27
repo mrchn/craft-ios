@@ -1,12 +1,12 @@
-// @/modules/ios-native-convert (pdfcraft-mobile)
+// @/modules/ios-native-convert/index.ts (pdfcraft-mobile)
 
-import IosNativeConvertModule from './src/IosNativeConvertModule';
+import convertModule from './src/IosNativeConvertModule';
 
 export async function localConvert(
 	docxPath: string, outputPath: string
 ): Promise<boolean> {
 	try {
-		return await IosNativeConvertModule.convert(
+		return await convertModule.convert(
 			docxPath.replace('file://', ''),
 			outputPath.replace('file://', '')
 		)
