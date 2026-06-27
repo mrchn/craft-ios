@@ -17,15 +17,11 @@ export const Form = ({
 	const {t} = useTranslation();
 	const sx = useAppTheme(theme);
 
-	const [ // стейты полей в форме
+	const [
 		form_data, set_form_data
 	] = useState<Record<string, string>>({});
 
-	useEffect(() => {
-		const initial: Record<string, string> = {};
-		fields.forEach(f => { initial[f] = ''; });
-		set_form_data(initial);
-	}, [fields]);
+	useEffect(() => set_form_data({}), [fields]);
 
 	const handle_submit = () => {
 		on_submit(form_data); on_close()
@@ -37,10 +33,8 @@ export const Form = ({
 			presentationStyle='pageSheet'
 		>
 			<KeyboardAvoidingView 
-				behavior={
-					Platform.OS === 'ios' ? 'padding' : 'height'
-				}
-				style={sx.safe} keyboardVerticalOffset={16}
+				behavior={'padding'} style={sx.safe}
+				keyboardVerticalOffset={16}
 			>
 				<View style={sx.header}>
 					<View style={{ width: 24 }} />
@@ -53,9 +47,7 @@ export const Form = ({
 						/>
 					</TouchableOpacity>
 				</View>
-				<ScrollView
-					contentContainerStyle={{padding: 20}}
-				>
+				<ScrollView contentContainerStyle={{padding: 20}}>
 					<Text style={sx.section_title}>
 						{t('documentVariables')}
 					</Text>
