@@ -1,14 +1,13 @@
-// @/modules/ios-native-convert/src/IosNativeConvertModule.ts (pdfcraft-mobile)
+// @/modules/ios-native-convert/src/IosNativeConvertModule.ts
 
 import { NativeModule, requireNativeModule } from 'expo-modules-core';
 
-declare class IosNativeConvertModule extends NativeModule {
+interface IosNativeConvertModule {
 	convert(docxPath: string, outputPath: string): Promise<boolean>
 }
 
-let _mod: IosNativeConvertModule | null = null;
+let mod: IosNativeConvertModule;
+try { mod = requireNativeModule<IosNativeConvertModule>('IosNativeConvert') }
+catch { mod = { convert: async () => false } }
 
-try { _mod = requireNativeModule<IosNativeConvertModule>('IosNativeConvert') }
-catch {}
-
-export default _mod
+export default mod;
