@@ -1,6 +1,6 @@
 // @/modules/ios-native-convert (pdfcraft-mobile)
 
-import IosNativeConvertModule from './src/IosNativeConvertModule';
+import IosNativeConvertModule from './src/IosNativeConvertModule.ts';
 
 export async function localConvert(
 	docxPath: string, outputPath: string
