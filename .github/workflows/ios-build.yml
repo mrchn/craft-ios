@@ -32,6 +32,21 @@ jobs:
         run: |
           npx expo prebuild --platform ios --clean
 
+      - name: Debug module registration
+        run: |
+          echo "=== ExpoModulesProvider — IosNativeConvert lines ==="
+          grep -n "IosNativeConvert" ios/*/ExpoModulesProvider.swift \
+            || echo "NOT FOUND"
+
+          echo ""
+          echo "=== Podfile pod line ==="
+          grep -n "ios-native-convert" ios/Podfile || echo "NOT FOUND"
+
+          echo ""
+          echo "=== Swift file in Pods dir ==="
+          find ios/Pods -name "IosNativeConvertModule.swift" \
+            || echo "Swift file NOT in Pods"
+
       - name: Build unsigned .ipa using xcodebuild
         run: |
           cd ios
