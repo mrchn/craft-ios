@@ -1,4 +1,5 @@
 {
+	"name": "IosNativeConvert",
 	"platforms": ["ios"],
 	"ios": {
 		"modules": [
