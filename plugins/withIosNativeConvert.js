@@ -30,24 +30,22 @@ module.exports = function withIosNativeConvert(config) {
 
 			if (!podfileContent.includes('ios_native_convert')) {
 				const rubyCode = `
-	provider = File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-pdfcraft', 'ExpoModulesProvider.swift')
-	if File.exist?(provider)
-		content = File.read(provider)
-		unless content.include?('ios_native_convert')
-		content.gsub!('import ExpoModulesCore', "import ExpoModulesCore\\nimport ios_native_convert")
-		content.gsub!('return [', "return [\\n      IosNativeConvertModule.self,")
-		File.write(provider, content)
-		puts '(!) IosNativeConvertModule registered in ExpoModulesProvider.swift'
-		end
-	end
-	`;
+at_exit do
+  providers = Dir.glob(File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-*', 'ExpoModulesProvider.swift'))
+  providers.each do |provider|
+    content = File.read(provider)
+    unless content.include?('ios_native_convert')
+      content.gsub!('import ExpoModulesCore', "import ExpoModulesCore\\nimport ios_native_convert")
+      content.gsub!(/func getModuleClasses.*?return\\s*\\[/m) { |match| "\#{match}\\n      IosNativeConvertModule.self," }
+      File.write(provider, content)
+      puts "(!) IosNativeConvertModule registered in ExpoModulesProvider.swift"
+    end
+  end
+end`;
 
-				podfileContent = podfileContent.replace(
-					'post_install do |installer|',
-					`post_install do |installer|${rubyCode}`
-				);
+				podfileContent += `\n${rubyCode}\n`;
 				changed = true;
-				console.log('(!) Safe post_install hook injected into existing block');
+				console.log('(!) Safe at_exit hook appended to Podfile');
 			}
 
 			if (changed) {
