@@ -8,7 +8,7 @@ public class IosNativeConvertModule: Module {
 	private var webView: WKWebView?
 	private var currentDelegate: NavigationDelegate?
 	public func definition() -> ModuleDefinition {
-		Name("ios-native-convert")
+		Name("IosNativeConvert")
 
 		AsyncFunction("convert") { (
 			docxPath: String, outputPath: String, promise: Promise

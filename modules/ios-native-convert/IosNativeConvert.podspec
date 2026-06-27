@@ -1,7 +1,7 @@
-# @/modules/ios-native-convert/ios-native-convert.podspec
+# @/modules/ios-native-convert/IosNativeConvert.podspec
 
 Pod::Spec.new do |s|
-  s.name           = 'ios-native-convert'
+  s.name           = 'IosNativeConvert'
   s.version        = '0.1.0'
   s.summary        = 'webkit pdf convert'
   s.description    = 'a native webkit pdf converter'
