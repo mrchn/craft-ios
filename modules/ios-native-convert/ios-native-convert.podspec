@@ -6,8 +6,10 @@ Pod::Spec.new do |s|
   s.summary        = 'webkit pdf convert'
   s.description    = 'a native webkit pdf converter'
   s.author         = 'mrchn'
+  s.homepage       = 'https://github.com/mrchn/pdfcraft-mobile'
+  s.license        = { :type => 'MIT' }
   s.platform       = :ios, '15.1'
-  s.source         = { git: '' }
+  s.source         = { :path => '.' }
   s.static_framework = true
   s.dependency 'ExpoModulesCore'
   s.pod_target_xcconfig = {
