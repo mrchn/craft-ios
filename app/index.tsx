@@ -18,7 +18,6 @@ import { useAppTheme, home as theme } from '@/theme';
 import { Form, Doc, Picker, hapticTap } from '@/components';
 
 const DB_URI = `${FileSystem.documentDirectory}doc_db.json`;
-const serverUrl = 'https://pdfcraft-mobile-backend.onrender.com';
 
 export default function HomeScreen() {
 
@@ -43,15 +42,8 @@ export default function HomeScreen() {
 		if (!picked_doc) { return }
 		set_form_visible(false);
 		set_is_converting(true);
-		try {
-			await Create({
-				doc: picked_doc, data: data, url: serverUrl, t: t
-			})
-		} catch {
-			Alert.alert(
-				`${ t('serverIsWakingUp' )}`, `${ t('serverWait') }`
-			)
-		} finally {
+		try { await Create({doc: picked_doc, data: data, t: t})
+		} catch {} finally {
 			set_is_converting(false);
 			set_picked_doc(null)
 		}
@@ -74,7 +66,6 @@ export default function HomeScreen() {
 		).catch(() => {})
 	}}, [docs, is_loaded]);
 
-	// удаление из списка по id
 	const handle_delete_document = useCallback((id: string) => {
 		hapticTap();
 		setDocs(
@@ -84,7 +75,6 @@ export default function HomeScreen() {
 		)
 	}, []);
 
-	// и дальше добавление :>
 	const { pick, isLoading: is_picking } = Picker({docs, setDocs});
 
 	const filtered = docs.filter(
@@ -101,7 +91,6 @@ export default function HomeScreen() {
 		</Pressable>
 	), [sx, handle_delete_document]);
 
-	// рендер карточек в списке
 	const render_item = useCallback(({ item }: { item: Doc }) => (
 		<Animated.View
 			entering={FadeInDown.duration(300).springify()}
