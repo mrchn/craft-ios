@@ -44,7 +44,7 @@ jobs:
             xcodebuild archive \
               -workspace "$WORKSPACE" \
               -scheme "$SCHEME" \
-              -configuration Release \
+              -configuration Debug \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
               -parallelizeTargets \
@@ -62,7 +62,7 @@ jobs:
             xcodebuild archive \
               -project "$PROJECT" \
               -scheme "$SCHEME" \
-              -configuration Release \
+              -configuration Debug \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
               -parallelizeTargets \
