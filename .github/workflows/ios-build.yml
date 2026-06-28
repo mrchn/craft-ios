@@ -44,7 +44,7 @@ jobs:
             xcodebuild archive \
               -workspace "$WORKSPACE" \
               -scheme "$SCHEME" \
-              -configuration Release \
+              -configuration Debug \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
               -parallelizeTargets \
@@ -53,7 +53,7 @@ jobs:
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
-              OTHER_LDFLAGS='$(inherited) -all_load' \
+              BUNDLE_IN_DEBUG=true \
               COMPILER_INDEX_STORE_ENABLED=NO \
               SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
               MTL_ENABLE_DEBUG_INFO=NO \
@@ -63,7 +63,7 @@ jobs:
             xcodebuild archive \
               -project "$PROJECT" \
               -scheme "$SCHEME" \
-              -configuration Release \
+              -configuration Debug \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
               -parallelizeTargets \
@@ -71,7 +71,7 @@ jobs:
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
-              OTHER_LDFLAGS='$(inherited) -all_load' \
+              BUNDLE_IN_DEBUG=true \
               COMPILER_INDEX_STORE_ENABLED=NO \
               SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
               MTL_ENABLE_DEBUG_INFO=NO \
