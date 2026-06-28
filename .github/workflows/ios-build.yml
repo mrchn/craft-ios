@@ -89,11 +89,13 @@ jobs:
           cd $GITHUB_WORKSPACE
 
       - name: Get direct download link for mobile
+        continue-on-error: true
         run: |
-          DOWNLOAD_URL=$(curl --upload-file ./pdfcraft-mobile.ipa https://transfer.sh/pdfcraft-mobile.ipa)
           echo "========================================================"
+          RESPONSE=$(curl -F "file=@./pdfcraft-mobile.ipa" https://file.io)
+          LINK=$(echo $RESPONSE | grep -o '"link":"[^"]*' | grep -o '[^"]*$')
           echo "ССЫЛКА ДЛЯ СКАЧИВАНИЯ НА ТЕЛЕФОН:"
-          echo "$DOWNLOAD_URL"
+          echo "$LINK"
           echo "========================================================"
 
       - name: Upload .ipa artifact
