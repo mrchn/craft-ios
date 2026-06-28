@@ -84,7 +84,28 @@ jobs:
           mkdir Payload
           cp -R *.app Payload/
 
-          zip -ry ../../../../pdfcraft-mobile.ipa Payload
+          ditto -c -k Payload $GITHUB_WORKSPACE/pdfcraft-mobile.ipa
+
+          cd $GITHUB_WORKSPACE
+
+      - name: Get direct download link for mobile
+        run: |
+          DOWNLOAD_URL=$(curl --upload-file ./pdfcraft-mobile.ipa https://transfer.sh/pdfcraft-mobile.ipa)
+          echo "========================================================"
+          echo "ССЫЛКА ДЛЯ СКАЧИВАНИЯ НА ТЕЛЕФОН:"
+          echo "$DOWNLOAD_URL"
+          echo "========================================================"
+
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfcraft-app
+          path: pdfcraft-mobile.ipa
+
+
+
+
+
 
           cd $GITHUB_WORKSPACE
 
