@@ -1,12 +1,12 @@
 // @/components/picker (pdfcraft-mobile)
 
-import { useState, useCallback } from 'react';
-import * as DocumentPicker from 'expo-document-picker';
-import { Alert } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { useState, useCallback } from 'react'
+import * as DocumentPicker from 'expo-document-picker'
+import { Alert } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
-import { hapticTap } from '@/components';
-import type { PickerProps, Doc } from '@/components';
+import { hapticTap } from './haptics'
+import type { PickerProps, Doc } from './interfaces'
 
 export const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 

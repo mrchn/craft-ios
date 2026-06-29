@@ -3,7 +3,8 @@
 import { Alert } from 'react-native'
 import * as FileSystem from 'expo-file-system/legacy'
 import * as Sharing from 'expo-sharing'
-import { Generate, convertPDF } from '@/services'
+import { Generate } from './server'
+import { convertPDF } from './convert'
 
 type Params = {
 	doc: { uri: string ; title: string }
