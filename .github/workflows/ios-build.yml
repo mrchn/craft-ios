@@ -32,9 +32,18 @@ jobs:
         run: |
           npx expo prebuild --platform ios --clean
 
+      - name: Bundle JavaScript
+        run: |
+          npx react-native bundle \
+            --platform ios \
+            --dev false \
+            --entry-file index.js \
+            --bundle-output ios/main.jsbundle \
+            --assets-dest ios
+
       - name: Build unsigned .ipa using xcodebuild
         env:
-          BUNDLE_IN_DEBUG: 'true'
+          SKIP_BUNDLING: '1'
         run: |
           cd ios
 
@@ -55,7 +64,6 @@ jobs:
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
-              BUNDLE_IN_DEBUG=true \
               COMPILER_INDEX_STORE_ENABLED=NO \
               SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
               MTL_ENABLE_DEBUG_INFO=NO \
@@ -74,7 +82,6 @@ jobs:
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
-              BUNDLE_IN_DEBUG=true \
               COMPILER_INDEX_STORE_ENABLED=NO \
               SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
               MTL_ENABLE_DEBUG_INFO=NO \
