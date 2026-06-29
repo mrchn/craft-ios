@@ -26,7 +26,7 @@ export async function Create ({ doc, data, t }: Params) {
 			return false
 		}
 		Sharing.shareAsync(pdf_uri)
-		FileSystem.deleteAsync(uri, { idempotent: true })
+		await FileSystem.deleteAsync(uri, { idempotent: true })
 		return true
 	}
 	return false
