@@ -2,6 +2,21 @@
 
 function ooxml_to_html(xml: string): string {
 	const out: string[] = [];
+
+	for (const [table] of xml.matchAll(/<w:tbl[ >][\s\S]*?<\/w:tbl>/g)) {
+		let rows = '';
+		for (const [row] of table.matchAll(/<w:tr[ >][\s\S]*?<\/w:tr>/g)) {
+			let cells = '';
+			for (const [cell] of row.matchAll(/<w:tc[ >][\s\S]*?<\/w:tc>/g)) {
+				const text = [...cell.matchAll(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g)]
+					.map(m => m[1]).join('');
+				cells += `<td style="border:1px solid #999;padding:6px">${text}</td>`;
+			}
+			rows += `<tr>${cells}</tr>`;
+		}
+		out.push(`<table style="border-collapse:collapse;width:100%">${rows}</table>`);
+	}
+
 	for (const [para] of xml.matchAll(/<w:p[ >][\s\S]*?<\/w:p>/g)) {
 		const style = para.match(/<w:pStyle w:val="([^"]+)"/)?.[1] ?? '';
 		let content = '';
