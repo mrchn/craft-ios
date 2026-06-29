@@ -42,7 +42,7 @@ export default function HomeScreen() {
 		if (!picked_doc) { return }
 		set_form_visible(false);
 		set_is_converting(true);
-		try { await Create({doc: picked_doc, data: data, t: t})
+		try { await Create({doc: picked_doc, data: data })
 		} catch {} finally {
 			set_is_converting(false);
 			set_picked_doc(null)
