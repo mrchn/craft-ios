@@ -70,6 +70,7 @@ jobs:
               -destination generic/platform=iOS \
               -parallelizeTargets \
               -quiet \
+              -allowProvisioningUpdates \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
@@ -84,12 +85,14 @@ jobs:
           cd build/pdfcraft-mobile.xcarchive/Products/Applications/
           APP_NAME=$(ls -d *.app | head -n 1)
 
-          mkdir $GITHUB_WORKSPACE/Payload
-          ditto "$APP_NAME" $GITHUB_WORKSPACE/Payload/"$APP_NAME"
+          mkdir -p "$GITHUB_WORKSPACE/Payload"
+          ditto "$APP_NAME" "$GITHUB_WORKSPACE/Payload/$APP_NAME"
+          cd $GITHUB_WORKSPACE
+          zip -qr pdfcraft-mobile.ipa Payload/
 
       - name: Upload Payload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pdfcraft-payload
-          path: Payload/
+          name: pdfcraft-ios
+          path: pdfcraft-mobile.ipa
           retention-days: 14
