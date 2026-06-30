@@ -106,7 +106,7 @@ export default function HomeScreen() {
 	return (
 	<View style={[sx.root, {paddingTop: insets.top}]}>
 		<View style={sx.header}>
-			<Text style={sx.title}>Create document</Text>
+			<Text style={sx.title}>{t('title')}</Text>
 		</View>
 		{docs.length > 0 && (
 		<Animated.View

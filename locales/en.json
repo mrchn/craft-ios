@@ -1,21 +1,18 @@
 {
+	"title": "Create document",
 	"search": "search for templates...",
 	"cancel": "cancel",
 	"vars": "TEMPLATE VARIABLES",
 	"craft": "CRAFT",
 	"empty": "fields is empty :(",
-
 	"today": "Today",
 	"share": "Share document",
 	"crafted": "Crafted document",
-
 	"docExists": "Document already exists.",
 	"docsNotFound": "no documents found",
-
 	"serverError": "SERVER ERROR",
 	"serverResponse": "SERVER RESPONSE",
 	"serverIsWakingUp": "SERVER IS WAKING UP",
 	"serverWait": "Wait about 40 seconds and try again.",
-
 	"craftError": "Something went wrong while building."
 }
