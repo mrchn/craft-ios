@@ -4,11 +4,9 @@ import JSZip from 'jszip'
 import * as FileSystem from 'expo-file-system/legacy'
 import * as Sharing from 'expo-sharing'
 import { convertPDF } from './convert'
-import type { CreateProps } from './interfaces'
+import type { CreateProps, TemplateProps } from '@/components'
 
-const fillTemplate = async (
-	temp: string, title: string, data: Record<string, string>
-) => {
+const fillTemplate = async (temp, title, data): TemplateProps => {
 	try {
 		const zip = await JSZip.loadAsync(
 			await FileSystem.readAsStringAsync(
