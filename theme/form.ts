@@ -48,16 +48,6 @@ export const form = (mode: Theme) =>
 				marginTop: 20
 			},
 			submit_text: text(c.bg, 17),
-			indicator: {
-				...CENTER,
-				...StyleSheet.absoluteFillObject,
-				backgroundColor: 'rgba(0,0,0,0.6)',
-				zIndex: 9999
-			},
-			indicator_text: {
-				...text(c.text, 14),
-				marginTop: 16
-			},
 			closeBtn: {
 				size: 48,
 				color: c.btn
