@@ -1,21 +1,20 @@
 // @/craft
-
 import JSZip from 'jszip'
-import * as FileSystem from 'expo-file-system/legacy'
 import * as Sharing from 'expo-sharing'
+import * as FileSystem from 'expo-file-system/legacy'
 import { printToFileAsync } from 'expo-print'
+import { useTranslation } from 'react-i18next'
 import { ooxml_to_html } from './ooxml2html'
 import type { CreateProps } from '@/types'
 
-const getXML = async (uri: string) => {
-	return (await JSZip.loadAsync(
-		await FileSystem.readAsStringAsync(
-			uri, { encoding: 'base64' }
-		), { base64: true }
-	)).file('word/document.xml')?.async('text')
-}
+const getXML = async (uri: string) => { return (await JSZip.loadAsync(
+	await FileSystem.readAsStringAsync(
+		uri, { encoding: 'base64' }
+	), { base64: true }
+)).file('word/document.xml')?.async('text') }
 
 export async function Create({ doc, data }: CreateProps) {
+	const {t} = useTranslation()
 	const uriPDF = `${FileSystem.cacheDirectory}craft.pdf`
 	try {
 		let xml = await getXML(doc.uri)
@@ -39,7 +38,10 @@ export async function Create({ doc, data }: CreateProps) {
 				`${ooxml_to_html(xml)}</body></html>`
 		})
 		await FileSystem.moveAsync({ from: tmp, to: uriPDF })
-		Sharing.shareAsync(uriPDF).finally(() => {
+		Sharing.shareAsync(uriPDF, {
+			mimeType: 'application/pdf', UTI: 'com.adobe.pdf',
+			dialogTitle: `${t('share')}`
+		}).finally(() => {
 			FileSystem.deleteAsync(
 				uriPDF, { idempotent: true }
 			).catch(() => {})

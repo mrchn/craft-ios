@@ -6,6 +6,7 @@
 	"empty": "fields is empty :(",
 
 	"today": "Today",
+	"share": "Share document",
 
 	"docExists": "Document already exists.",
 	"docsNotFound": "no documents found",
