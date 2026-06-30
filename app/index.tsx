@@ -1,6 +1,7 @@
 // @/app/index
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, {
+	useState, useEffect, useCallback, useMemo } from 'react'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as FileSystem from 'expo-file-system/legacy'
@@ -66,11 +67,10 @@ export default function HomeScreen() {
 
 	const { pick, isLoading: isPicking } = Picker({docs, setDocs})
 
-	const filtered = docs.filter(
-		(d) => d.title.toLowerCase().includes(
-			query.toLowerCase()
-		)
-	)
+	const filtered = useMemo(() => {
+		const q = query.toLowerCase()
+		return docs.filter((d) => d.title.toLowerCase().includes(q))
+	}, [docs, query])
 
 	const render_item = ({ item }: { item: Doc }) => (
 		<Animated.View
