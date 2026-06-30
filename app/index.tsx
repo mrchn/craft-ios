@@ -1,7 +1,5 @@
 // @/app/index
-
-import React, {
-	useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as FileSystem from 'expo-file-system/legacy'
@@ -13,7 +11,6 @@ import Animated, {
 import {
 	FlatList, Pressable, View, Text, TextInput,
 	ActivityIndicator } from 'react-native'
-
 import { Create, Parse } from '@/craft'
 import { useAppTheme, home as theme } from '@/theme'
 import { Form, Picker, hapticTap } from '@/components'
@@ -60,7 +57,7 @@ export default function HomeScreen() {
 		return docs.filter((d) => d.title.toLowerCase().includes(q))
 	}, [docs, query])
 
-	const render_item = ({ item }: { item: Doc }) => (
+	const renderItem = ({ item }: { item: Doc }) => (
 		<Animated.View
 			entering={FadeInDown.duration(300).springify()}
 			layout={LinearTransition.springify()}
@@ -87,8 +84,7 @@ export default function HomeScreen() {
 			>
 				<View style={sx.icon_wrap}>
 					<Ionicons
-						name='document-text'
-						size={22} color='#1F4E79'/>
+						name='document-text' size={22} color='#FFF'/>
 				</View>
 				<View style={{flex: 1}}>
 					<Text style={sx.row_title} numberOfLines={1}>
@@ -100,19 +96,17 @@ export default function HomeScreen() {
 				</View>
 				<Ionicons
 					name='chevron-forward' size={16}
-					color={sx.title.color} 
-					style={{marginLeft: 8}}/>
+					color={sx.title.color} style={{marginLeft: 8}}/>
 			</Pressable>
 		</Swipeable>
 		</Animated.View>
 	)
 
 	const insets = useSafeAreaInsets()
-
 	return (
 	<View style={[sx.root, {paddingTop: insets.top}]}>
 		<View style={sx.header}>
-			<Text style={sx.title}>Ready to craft</Text>
+			<Text style={sx.title}>Create document</Text>
 		</View>
 		{docs.length > 0 && (
 		<Animated.View
@@ -121,9 +115,8 @@ export default function HomeScreen() {
 			<View style={sx.search_row}>
 				<View style={sx.search}>
 					<Ionicons
-						name='search' size={16}
-						color={sx.title.color}
-						style={{marginLeft: 20}}
+						name='search' style={{marginLeft: 20}}
+						size={16} color={sx.title.color}
 					/>
 					<TextInput
 						style={sx.search_input}
@@ -140,7 +133,7 @@ export default function HomeScreen() {
 		<View style={{flex: 1}}>
 			<FlatList
 				data={filter} keyExtractor={(d) => d.id}
-				renderItem={render_item}
+				renderItem={renderItem}
 				contentContainerStyle={sx.list_content}
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={

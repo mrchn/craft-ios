@@ -1,5 +1,4 @@
 // @/types
-
 import React from 'react'
 
 export interface Doc {

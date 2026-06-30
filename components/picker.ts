@@ -32,7 +32,7 @@ export function Picker ({ docs, setDocs }: PickerProps) {
 				setDocs(prev => [{
 					id: Date.now().toString(),
 					title: file.name, size: fileSizeFormatted,
-					date: `Today, ${new Date().toLocaleTimeString(
+					date: `${t('today')}, ${new Date().toLocaleTimeString(
 						[], { hour: '2-digit', minute: '2-digit' }
 					)}`, uri: file.uri
 				}, ...prev])

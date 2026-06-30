@@ -1,12 +1,11 @@
-// @/theme/form (pdfcraft-mobile)
+// @/theme/form
 
-import { StyleSheet } from 'react-native';
-import { createStyles, ROW, CENTER, text } from './helpers';
-import { Theme } from './colors';
+import { StyleSheet } from 'react-native'
+import { createStyles, ROW, CENTER, text } from './helpers'
+import { Theme } from './colors'
 
 export const form = (mode: Theme) =>
-	createStyles('form', mode, c =>
-		StyleSheet.create({
+	createStyles('form', mode, c => StyleSheet.create({
 
 			safe: {
 				flex: 1,
@@ -22,7 +21,7 @@ export const form = (mode: Theme) =>
 				marginTop: 20,
 				marginBottom: 20
 			},
-			fields_empty: {
+			empty: {
 				color: c.info,
 				marginTop: 10,
 				textAlign: 'center'
@@ -63,6 +62,5 @@ export const form = (mode: Theme) =>
 				size: 48,
 				color: c.btn
 			}
-
 		})
 )
