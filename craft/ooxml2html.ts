@@ -1,4 +1,4 @@
-// @/services/ooxml2html
+// @/craft/ooxml2html
 
 export function ooxml_to_html (xml: string): string {
 	const out: string[] = []
