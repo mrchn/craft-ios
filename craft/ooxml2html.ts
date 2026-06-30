@@ -6,7 +6,7 @@ export function ooxml_to_html (xml: string): string {
 		/(<w:tbl[ >][\s\S]*?<\/w:tbl>)|(<w:p[ >][\s\S]*?<\/w:p>)/g
 	)
 
-	for (const [match, tbl, para] of matches) {
+	for (const [, tbl, para] of matches) {
 		if (tbl) {
 			let rows = ''
 			for (const [row] of tbl.matchAll(/<w:tr[ >][\s\S]*?<\/w:tr>/g)) {
