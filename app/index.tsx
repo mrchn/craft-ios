@@ -33,7 +33,7 @@ export default function HomeScreen() {
 	const create = async (data: Record<string, string>) => {
 		if (!picked) { return }
 		setForm(false) ; setConverting(true)
-		await Create({doc: picked, data }).catch(() => {})
+		await Create({doc: picked, data, t }).catch(() => {})
 		setConverting(false) ; setPicked(null)
 	}
 

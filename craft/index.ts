@@ -13,9 +13,8 @@ const getXML = async (uri: string) => { return (await JSZip.loadAsync(
 	), { base64: true }
 )).file('word/document.xml')?.async('text') }
 
-export async function Create({ doc, data }: CreateProps) {
-	const {t} = useTranslation()
-	const uriPDF = `${FileSystem.cacheDirectory}craft.pdf`
+export async function Create({ doc, data, t }: CreateProps) {
+	const uriPDF = `${FileSystem.cacheDirectory}${t('crafted')}.pdf`
 	try {
 		let xml = await getXML(doc.uri)
 		if (!xml) return false

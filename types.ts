@@ -27,5 +27,5 @@ export type TemplateProps = {
 
 export type CreateProps = {
 	doc: { uri: string ; title: string }
-	data: Record<string, string>
+	data: Record<string, string>, t: string
 }
