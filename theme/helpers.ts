@@ -1,31 +1,19 @@
-// @/theme/helpers (pdfcraft-mobile)
+// @/theme/helpers
+import { Colors, Theme } from './colors'
 
-import { StyleSheet } from 'react-native';
-import { Colors, Theme } from './colors';
-
-export const ROW = {
-	alignItems: 'center',
-	flexDirection: 'row'
-};
-
-export const CENTER = {
-	alignItems: 'center',
-	justifyContent: 'center'
-};
+export const ROW = { alignItems: 'center', flexDirection: 'row' }
+export const CENTER = { alignItems: 'center', justifyContent: 'center' }
 
 export const text = (color: string, size: number) => ({
 	fontFamily: 'ui-monospace', color, fontSize: size
-});
+})
 
-const cache = new Map<string, any>();
+const cache = new Map<string, any>()
 
 export const createStyles = <T>(
-
-	key: string, mode: Theme,
-	build: (c: typeof Colors[Theme]) => T) => {
-
-	const k = `${key}_${mode}`;
-	if (!cache.has(k)) cache.set(k, build(Colors[mode]));
+	key: string, mode: Theme, build: (c: typeof Colors[Theme])
+=> T) => {
+	const k = `${key}_${mode}`
+	if (!cache.has(k)) cache.set(k, build(Colors[mode]))
 	return cache.get(k)
-
 }
