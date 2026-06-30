@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system/legacy'
 import * as Sharing from 'expo-sharing'
 import { printToFileAsync } from 'expo-print'
 import { ooxml_to_html } from './ooxml2html'
-import type { CreateProps } from '@/components'
+import type { CreateProps } from '@/types'
 
 const getXML = async (uri: string) => {
 	return (await JSZip.loadAsync(

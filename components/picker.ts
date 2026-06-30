@@ -34,8 +34,7 @@ export function Picker ({ docs, setDocs }: PickerProps) {
 					title: file.name, size: fileSizeFormatted,
 					date: `Today, ${new Date().toLocaleTimeString(
 						[], { hour: '2-digit', minute: '2-digit' }
-					)}`, icon: 'document-text', color: '#1F4E79',
-					uri: file.uri
+					)}`, uri: file.uri
 				}, ...prev])
 				hapticTap()
 			}

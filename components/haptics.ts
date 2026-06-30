@@ -1,6 +1,6 @@
-// @/components/haptics (pdfcraft-mobile)
+// @/components/haptics
 
-import * as Haptics from 'expo-haptics';
+import * as Haptics from 'expo-haptics'
 
 const STYLES = {
 	light: Haptics.ImpactFeedbackStyle.Light,
@@ -8,7 +8,7 @@ const STYLES = {
 	heavy: Haptics.ImpactFeedbackStyle.Heavy,
 	soft: Haptics.ImpactFeedbackStyle.Soft,
 	rigid: Haptics.ImpactFeedbackStyle.Rigid
-};
+}
 
 export const hapticTap = (style: keyof typeof STYLES = 'rigid') => {
 	Haptics.impactAsync(STYLES[style])

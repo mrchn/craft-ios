@@ -1,14 +1,13 @@
-// @/components/form (pdfcraft-mobile)
+// @/components/form
 
-import React, { useState, useEffect } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react'
+import { Ionicons } from '@expo/vector-icons'
+import { useTranslation } from 'react-i18next'
+import { FormProps } from '@/types'
+import { useAppTheme, form as theme } from '@/theme'
 import {
 	TextInput, ScrollView, Modal, View, Text,
-	TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-
-import { FormProps } from '@/components';
-import { useAppTheme, form as theme } from '@/theme';
+	TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 
 export const Form = ({
 		visible, on_close, fields = [], on_submit

@@ -1,12 +1,11 @@
-// @/theme/homescreen (pdfcraft-mobile)
+// @/theme/homescreen
 
-import { StyleSheet } from 'react-native';
-import { createStyles, ROW, CENTER, text } from './helpers';
-import { Theme } from './colors';
+import { StyleSheet } from 'react-native'
+import { createStyles, ROW, CENTER, text } from './helpers'
+import { Theme } from './colors'
 
 export const home = (mode: Theme) =>
-	createStyles('home', mode, c =>
-		StyleSheet.create({
+	createStyles('home', mode, c => StyleSheet.create({
 
 			root: {
 				flex: 1,
@@ -55,9 +54,14 @@ export const home = (mode: Theme) =>
 				paddingVertical: 20,
 				paddingHorizontal: 16
 			},
+			item: {
+				borderRadius: 24,
+				overflow: 'hidden',
+				marginBottom: 8
+			},
 			icon_wrap: {
 				...CENTER,
-				backgroundColor: c.text,
+				backgroundColor: '#1F4E79',
 				borderRadius: 8,
 				width: 36, height: 36,
 				marginRight: 12

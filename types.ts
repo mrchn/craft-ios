@@ -1,4 +1,4 @@
-// @/components/interfaces
+// @/types
 
 import React from 'react'
 
