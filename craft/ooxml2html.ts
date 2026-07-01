@@ -48,16 +48,29 @@ export function ooxml_to_html (xml: string): string {
 				const sz = rPr.match(/<w:sz w:val="(\d+)"/)?.[1]
 				const font = rPr.match(/<w:rFonts[^>]+w:ascii="([^"]+)"/)?.[1]
 					|| rPr.match(/<w:rFonts[^>]+w:hAnsi="([^"]+)"/)?.[1]
-				let t = [...run.matchAll(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g)]
-					.map(m => m[1]).join('')
+
+				let t = '' ; let preserveSpace = false
+				for (const match of run.matchAll(/<w:t([^>]*)>([\s\S]*?)<\/w:t>|<w:br[^>]*>/g)) {
+					if (match[0].startsWith('<w:br')) { t += '<br>' }
+					else {
+						if (/xml:space="preserve"/.test(match[1] || '')) {
+							preserveSpace = true
+						}
+						let textContent = match[2] || ''
+						textContent = textContent
+							.replace(/&/g, '&amp;')
+							.replace(/</g, '&lt;')
+							.replace(/>/g, '&gt;')
+						t += textContent
+					}
+				}
+
 				if (!t) continue
-				t = t.replace(/&/g, '&amp;')
-					.replace(/</g, '&lt;')
-					.replace(/>/g, '&gt;')
 				const runStyles = []
 				if (font) runStyles.push(`font-family:'${font}'`)
 				if (sz) runStyles.push(`font-size:${parseInt(sz, 10) / 2}pt`)
 				if (underline) runStyles.push(`text-decoration:underline`)
+				if (preserveSpace) runStyles.push(`white-space:pre-wrap`)
 
 				if (runStyles.length > 0) {
 					t = `<span style="${runStyles.join(';')}">${t}</span>`
