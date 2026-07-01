@@ -1,12 +1,12 @@
 // @/craft/ooxml2html
 
-const unescXML = (s: string) => { s
+const unescXML = (s: string) => { return s
 	.replace(/&amp;/g, '&')
 	.replace(/&lt;/g, '<')
 	.replace(/&gt;/g, '>')
 }
 
-const escHTML = (s: string) => { s
+const escHTML = (s: string) => { return s
 	.replace(/&/g, '&amp;')
 	.replace(/</g, '&lt;')
 	.replace(/>/g, '&gt;')
@@ -125,7 +125,7 @@ export function ooxml_to_html (xml: string): string {
 						if (/xml:space="preserve"/.test(
 							match[1] || ''
 						)) { preserveSpace = true }
-						t += escapeHTML(unescapeXML(match[2] || ''))
+						t += escHTML(unescXML(match[2] || ''))
 					}
 				}
 				if (!t) continue
