@@ -183,7 +183,7 @@ export default function HomeScreen() {
 			</Pressable>
 			<Form
 				visible={ form } fields={ fields }
-				on_close={ () => setForm(false) } on_submit={ create }
+				onClose={ () => setForm(false) } onSubmit={ create }
 			/>
 		</View>
 	</View>
