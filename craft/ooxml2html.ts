@@ -12,8 +12,16 @@ const escHTML = (s: string) => { return s
 	.replace(/>/g, '&gt;')
 }
 
+const regexCache = new Map<string, RegExp>()
+const tagRegex = (tag: string) => {
+	if (!regexCache.has(tag)) {
+		regexCache.set(tag, new RegExp(`<w:${tag}\\b[^>]*/?>`))
+	}
+	return regexCache.get(tag)!
+}
+
 const isOn = (tag: string, scope: string) => {
-	const m = scope.match(new RegExp(`<w:${tag}\\b[^>]*/?>`))
+	const m = scope.match(tagRegex(tag))
 	if (!m) return false
 	const val = m[0].match(/w:val="([^"]+)"/)?.[1]
 	return val === undefined
