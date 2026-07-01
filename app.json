@@ -11,11 +11,12 @@
 		"ios": {
 			"icon": {
 				"light": "./icons/icon-light.png",
-				"dark": "./icons/icon-dark.png"
+				"dark": "./icons/icon-dark.png",
+				"tinted": "./icons/icon-tinted.png"
 			},
 			"supportsTablet": true,
 			"bundleIdentifier": "ru.mrchn.craft",
-			"buildNumber": "96",
+			"buildNumber": "97",
 			"infoPlist": {
 				"ITSAppUsesNonExemptEncryption": false,
 				"CFBundleLocalizations": [
