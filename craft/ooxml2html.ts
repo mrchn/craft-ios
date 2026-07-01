@@ -1,5 +1,4 @@
 // @/craft/ooxml2html
-
 export function ooxml_to_html (xml: string): string {
 	const out: string[] = []
 	const matches = xml.matchAll(
@@ -42,13 +41,28 @@ export function ooxml_to_html (xml: string): string {
 
 			let content = ''
 			for (const [run] of para.matchAll(/<w:r[ >][\s\S]*?<\/w:r>/g)) {
-				const bold = /<w:b[ \/]/.test(run)
-				const italic = /<w:i[ \/]/.test(run)
+				const rPr = run.match(/<w:rPr[ >][\s\S]*?<\/w:rPr>/)?.[0] ?? ''
+				const bold = /<w:b[ \/>]/.test(rPr) || /<w:b[ \/>]/.test(run)
+				const italic = /<w:i[ \/>]/.test(rPr) || /<w:i[ \/>]/.test(run)
+				const underline = /<w:u[ \/>]/.test(rPr)
+				const sz = rPr.match(/<w:sz w:val="(\d+)"/)?.[1]
+				const font = rPr.match(/<w:rFonts[^>]+w:ascii="([^"]+)"/)?.[1]
+					|| rPr.match(/<w:rFonts[^>]+w:hAnsi="([^"]+)"/)?.[1]
 				let t = [...run.matchAll(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g)]
 					.map(m => m[1]).join('')
+				if (!t) continue
 				t = t.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
+				const runStyles = []
+				if (font) runStyles.push(`font-family:'${font}'`)
+				if (sz) runStyles.push(`font-size:${parseInt(sz, 10) / 2}pt`)
+				if (underline) runStyles.push(`text-decoration:underline`)
+
+				if (runStyles.length > 0) {
+					t = `<span style="${runStyles.join(';')}">${t}</span>`
+				}
+
 				if (bold) t = `<b>${t}</b>`
 				if (italic) t = `<i>${t}</i>`
 				content += t
