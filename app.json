@@ -15,7 +15,7 @@
 			},
 			"supportsTablet": true,
 			"bundleIdentifier": "ru.mrchn.craft",
-			"buildNumber": "95",
+			"buildNumber": "96",
 			"infoPlist": {
 				"ITSAppUsesNonExemptEncryption": false,
 				"CFBundleLocalizations": [
