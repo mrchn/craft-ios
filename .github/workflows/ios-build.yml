@@ -30,6 +30,7 @@ jobs:
 
       - name: Generate native iOS project (expo-prebuild)
         run: |
+          jq '.expo.ios.buildNumber = "'"${{ github.run_number }}"'"' app.json > temp.json && mv temp.json app.json
           npx expo prebuild --platform ios --clean
 
       - name: Build unsigned .ipa using xcodebuild
