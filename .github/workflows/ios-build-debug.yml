@@ -1,9 +1,6 @@
-name: Build unsigned app for iOS (for Altstore install)
+name: Build unsigned app for iOS (Debug)
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 concurrency:
@@ -14,7 +11,7 @@ env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
 
 jobs:
-  Build-unsigned-ipa:
+  Build-unsigned-ipa-debug:
     runs-on: macos-latest
 
     steps:
@@ -52,45 +49,43 @@ jobs:
             xcodebuild archive \
               -workspace "$WORKSPACE" \
               -scheme "$SCHEME" \
-              -configuration Release \
+              -configuration Debug \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
               -parallelizeTargets \
-              -quiet \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
               COMPILER_INDEX_STORE_ENABLED=NO \
               SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
-              MTL_ENABLE_DEBUG_INFO=NO \
+              MTL_ENABLE_DEBUG_INFO=YES \
               DEBUG_INFORMATION_FORMAT=dwarf
           else
             xcodebuild archive \
               -project "$PROJECT" \
               -scheme "$SCHEME" \
-              -configuration Release \
+              -configuration Debug \
               -archivePath build/pdfcraft-mobile.xcarchive \
               -destination generic/platform=iOS \
               -parallelizeTargets \
-              -quiet \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
               COMPILER_INDEX_STORE_ENABLED=NO \
               SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
-              MTL_ENABLE_DEBUG_INFO=NO \
+              MTL_ENABLE_DEBUG_INFO=YES \
               DEBUG_INFORMATION_FORMAT=dwarf
           fi
 
           cd build/pdfcraft-mobile.xcarchive/Products/Applications/
           mkdir Payload
           cp -R *.app Payload/
-          zip -r ../../../../craft.ipa Payload
+          zip -r ../../../../craft-debug.ipa Payload
           cd $GITHUB_WORKSPACE
 
       - name: Upload .ipa artifact
         uses: actions/upload-artifact@v4
         with:
-          name: craft-ios-${{ github.run_number }}
-          path: ios/craft.ipa
+          name: craft-ios-${{ github.run_number }}-debug
+          path: ios/craft-debug.ipa
           retention-days: 7
